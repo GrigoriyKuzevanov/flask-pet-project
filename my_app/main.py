@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 menu = [
     {'name': 'Главная', 'url': '/'},
-    {'name': 'Платежные Документы', 'url': '/documents/'},
+    {'name': 'Платежные документы', 'url': '/documents/'},
     {'name': 'Тарифы', 'url': '/prices/'},
     {'name': 'Статистика', 'url': '/stats/'}
 ]
