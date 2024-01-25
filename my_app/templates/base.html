@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Подключение bootstrap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link type="text/css" href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <!-- Подключение favicon.io -->
+    <link rel="apple-touch-icon" sizes="180x180" href="static/files/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="static/files/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="static/files/favicon/favicon-16x16.png">
+    <link rel="manifest" href="static/files/favicon/site.webmanifest">
+
+    {% block title %}
+
+    {% if title %}
+    <title>Коммуналка - {{ title }}</title>
+    {% else %}
+    <title>Коммуналка</title>
+    {% endif %}
+
+    {% endblock %}
+</head>
+
+<body>
+
+    {% block content %}
+    {% block mainmenu %}
+    <ul class="mainmenu">
+        {%- for m in menu -%}
+        <li><a href="{{ m.url }}">{{ m.name }}</a></li>
+        {%- endfor -%}
+    </ul>
+    {% endblock mainmenu %}
+
+    <div class="content">
+        <p>{{ url }}</p>
+        {% if title %}
+        <h1>{{ title }}</h1>
+        {% else %}
+        <h1>Flask project</h1>
+        {% endif %}
+        {% endblock %}
+    </div>
+
+    <!-- Подюключение bootstrap js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
