@@ -1,7 +1,5 @@
-import os
-
 from dotenv import load_dotenv
-from flask import flash, redirect, render_template, request, session, url_for
+from flask import flash, redirect, render_template, request, url_for
 
 from my_app import app
 from my_app.forms import LoginForm
@@ -14,7 +12,7 @@ menu = [
     {"name": "Платежные документы", "url": "/docs"},
     {"name": "Тарифы", "url": "/prices"},
     {"name": "Статистика", "url": "/stats"},
-    {'name': 'Войти', 'url': '/login'},
+    {"name": "Войти", "url": "/login"},
 ]
 
 
@@ -58,13 +56,17 @@ def stats():
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    url = url_for('login')
+    url = url_for("login")
     form = LoginForm()
-    if form.validate_on_submit() and request.method == 'POST':
-        flash(f'Пользователь {form.username.data} авторизован успешно', category='success')
-        return redirect(url_for('index'))
+    if form.validate_on_submit() and request.method == "POST":
+        flash(
+            f"Пользователь {form.username.data} авторизован успешно", category="success"
+        )
+        return redirect(url_for("index"))
 
-    return render_template("login.html", title="Авторизация", menu=menu, form=form, url=url)
+    return render_template(
+        "login.html", title="Авторизация", menu=menu, form=form, url=url
+    )
 
 
 @app.errorhandler(404)
