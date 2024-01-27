@@ -4,18 +4,17 @@ from dotenv import load_dotenv
 from flask import flash, redirect, render_template, request, session, url_for
 
 from my_app import app
+from my_app.forms import LoginForm
 
 load_dotenv()
 
-
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-app.config["FLASK_DEBUG"] = os.getenv("FLASK_DEBUG") == "True"
 
 menu = [
     {"name": "Главная", "url": "/"},
     {"name": "Платежные документы", "url": "/docs"},
     {"name": "Тарифы", "url": "/prices"},
     {"name": "Статистика", "url": "/stats"},
+    {'name': 'Войти', 'url': '/login'},
 ]
 
 
@@ -59,17 +58,13 @@ def stats():
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    if "userLogged" in session:
-        return redirect(url_for("index", username=session["userLogged"]))
-    elif (
-        request.method == "POST"
-        and request.form["username"] == "admin"
-        and request.form["psw"] == "1234"
-    ):
-        session["userLogged"] = request.form["username"]
-        return redirect(url_for("index", username=session["userLogged"]))
+    url = url_for('login')
+    form = LoginForm()
+    if form.validate_on_submit() and request.method == 'POST':
+        flash(f'Пользователь {form.username.data} авторизован успешно', category='success')
+        return redirect(url_for('index'))
 
-    return render_template("login.html", title="Авторизация", menu=menu)
+    return render_template("login.html", title="Авторизация", menu=menu, form=form, url=url)
 
 
 @app.errorhandler(404)
