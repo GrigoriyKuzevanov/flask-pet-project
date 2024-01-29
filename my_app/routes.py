@@ -1,8 +1,13 @@
+# from werkzeug.urls import url_parse
+from urllib.parse import quote as url_quote
+
 from dotenv import load_dotenv
 from flask import flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_required, login_user, logout_user
 
-from my_app import app
-from my_app.forms import LoginForm
+from my_app import app, db
+from my_app.forms import LoginForm, RegistrationForm
+from my_app.models import User
 
 load_dotenv()
 
@@ -12,7 +17,6 @@ menu = [
     {"name": "Платежные документы", "url": "/docs"},
     {"name": "Тарифы", "url": "/prices"},
     {"name": "Статистика", "url": "/stats"},
-    {"name": "Войти", "url": "/login"},
 ]
 
 
@@ -23,6 +27,7 @@ def index():
 
 
 @app.route("/docs")
+@login_required
 def documents():
     url = url_for("documents")
     return render_template(
@@ -32,11 +37,13 @@ def documents():
 
 # конвертеры: path, int, float (<int:doc_num>)
 @app.route("/document/<doc_num>")
+@login_required
 def show_document(doc_num):
     return f"Пользователь: {doc_num}"
 
 
 @app.route("/prices", methods=["POST", "GET"])
+@login_required
 def prices():
     url = url_for("prices")
     if request.method == "POST":
@@ -49,6 +56,7 @@ def prices():
 
 
 @app.route("/stats")
+@login_required
 def stats():
     url = url_for("stats")
     return render_template("stats.html", title="Статистика", menu=menu, url=url)
@@ -57,16 +65,47 @@ def stats():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     url = url_for("login")
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
     form = LoginForm()
     if form.validate_on_submit() and request.method == "POST":
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash("Неверный логин или пароль", category="error")
+            return redirect(url_for("login"))
+        login_user(user, remember=form.remember_me.data)
         flash(
             f"Пользователь {form.username.data} авторизован успешно", category="success"
         )
-        return redirect(url_for("index"))
+        next_page = request.args.get("next")
+        if not next_page or url_quote(next_page).netloc != "":
+            next_page = url_for("index")
+        return redirect(next_page)
 
     return render_template(
         "login.html", title="Авторизация", menu=menu, form=form, url=url
     )
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("index"))
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash("Вы успешно зарегестрировались в сервисе")
+        return redirect(url_for("login"))
+    return render_template("register.html", title="Регистрация", form=form, menu=menu)
 
 
 @app.errorhandler(404)

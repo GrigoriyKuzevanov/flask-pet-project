@@ -55,10 +55,29 @@
                                     <li class="nav-item px-2">
                                         <a class="nav-link" href="{{ m.url }}">{{ m.name }}</a>
                                     </li>
-                                    {% endif%}
+                                    {% endif%}                                  
                                     {%- endfor -%}
 
-                                </ul>
+                                    {% if current_user.is_anonymous and url == url_for('login') %}
+                                    <li class="nav-item px-2">
+                                        <a class="nav-link active" aria-current="page" href="{{ url_for('login') }}">Войти</a>
+                                    </li>
+                                    {% elif current_user.is_anonymous %}
+                                    <li class="nav-item px-2">
+                                        <a class="nav-link" href="{{ url_for('login') }}">Войти</a>
+                                    </li>
+                                    {% elif url == url_for('logout') %}
+                                    <li class="nav-item px-2">
+                                        <a class="nav-link active" aria-current="page" href="{{ url_for('logout') }}">Выйти</a>
+                                    </li>
+                                    {% else %}
+                                    <li class="nav-item px-2">
+                                        <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
+                                    </li>
+                                    {% endif%}
+
+
+                                </ul>   
                                 {% endblock mainmenu %}
                             </div>
                         </div>
