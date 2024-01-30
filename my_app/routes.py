@@ -23,7 +23,8 @@ menu = [
 @app.route("/")
 def index():
     url = url_for("index")
-    return render_template("index.html", menu=menu, url=url)
+    title = 'Главная'
+    return render_template("index.html", menu=menu, url=url, title=title)
 
 
 @app.route("/docs")
@@ -107,6 +108,13 @@ def register():
         return redirect(url_for("login"))
     return render_template("register.html", title="Регистрация", form=form, menu=menu)
 
+@app.route('/profile/<username>')
+@login_required
+def profile(username):
+    url = url_for('profile', username=username)
+    title = 'Профиль пользователя'
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template("profile.html", user=user, title=title, url=url, menu=menu)
 
 @app.errorhandler(404)
 def page_not_found(error):

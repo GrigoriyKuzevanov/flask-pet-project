@@ -70,9 +70,22 @@
                                     <li class="nav-item px-2">
                                         <a class="nav-link active" aria-current="page" href="{{ url_for('logout') }}">Выйти</a>
                                     </li>
+                                    <li class="nav-item px-2">
+                                        <a class="nav-link" href="{{ url_for('profile', username = current_user.username) }}">Профиль пользователя</a>
+                                    </li>
+                                    {% elif url == url_for('profile', username=current_user.username) %}
+                                    <li class="nav-item px-2">
+                                        <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
+                                    </li>
+                                    <li class="nav-item px-2">
+                                        <a class="nav-link active" aria-current="page" href="{{ url_for('profile', username = current_user.username) }}">Профиль пользователя</a>
+                                    </li>
                                     {% else %}
                                     <li class="nav-item px-2">
                                         <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
+                                    </li>
+                                    <li class="nav-item px-2">
+                                        <a class="nav-link" href="{{ url_for('profile', username = current_user.username) }}">Профиль пользователя</a>
                                     </li>
                                     {% endif%}
 
@@ -119,7 +132,7 @@
                         {% if title %}
                         <h1>{{ title }}</h1>
                         {% else %}
-                        <h1>Flask project</h1>
+                        <h1>Коммуналка</h1>
                         {% endif %}
                         {% endblock %}
                     </div>

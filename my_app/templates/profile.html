@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ super() }}
+
+<h1>Пользователь: {{ user }}</h1>
+<hr>
+<p>{{ user.username }}</p>
+<p>{{ user.email }}</p>
+<p>{{ user.req_at }}</p>
+<p>{{ user.company }}</p>
+{% for p in user.prices %}
+<p>p</p>
+{% endfor %}
+
+{% endblock %}

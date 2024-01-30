@@ -22,6 +22,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256))
     reg_at = db.Column(db.TIMESTAMP, index=True, default=datetime.utcnow)
     prices = db.relationship("Price", backref="user", lazy="dynamic")
+    company_id = db.Column(db.Integer, db.ForeignKey("companies.id"))
 
     def __repr__(self):
         return f"{self.username}"
@@ -38,6 +39,7 @@ class Price(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    company_id = db.Column(db.Integer, db.ForeignKey("companies.id"))
     created_at = db.Column(db.TIMESTAMP, index=True, default=datetime.utcnow)
     tko = db.Column(db.Float(12))
     maintenance_common = db.Column(db.Float(12))
@@ -56,3 +58,19 @@ class Price(db.Model):
 
     def __repr__(self):
         return f"for user {self.user_id}, created at {self.created_at}"
+    
+class Company(db.Model):
+    __tablename__ = "companies"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True)
+    prices = db.relationship("Price", backref="company", lazy="dynamic")
+    users = db.relationship("User", backref="company", lazy='dynamic')
+    email = db.Column(db.String(120), index=True, unique=True)
+    website = db.Column(db.String(256))
+    address = db.Column(db.String(512))
+    phone = db.Column(db.String(120))
+    emergency_phone = db.Column(db.String(120))
+
+    def __repr__(self):
+        return self.name
