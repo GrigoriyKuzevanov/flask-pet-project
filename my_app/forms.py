@@ -48,3 +48,4 @@ class PriceForm(FlaskForm):
     drainage = FloatField("Водоотведение (руб/м.куб)")
     gas = FloatField("Газоснабжение (руб/м.куб)")
     renovation = FloatField("Взнос на кап. ремонт (руб/м.кв)")
+    submit = SubmitField("Отправить")

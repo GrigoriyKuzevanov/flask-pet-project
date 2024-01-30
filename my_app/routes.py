@@ -7,7 +7,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 from my_app import app, db
 from my_app.forms import LoginForm, RegistrationForm, PriceForm
-from my_app.models import User
+from my_app.models import User, Price
 
 load_dotenv()
 
@@ -48,11 +48,30 @@ def show_document(doc_num):
 def prices():
     url = url_for("prices")
     form = PriceForm()
-    if request.method == "POST":
-        if len(request.form["username"]) > 2:
-            flash("Сообщение отправлено", category="success")
-        else:
-            flash("Ошибка отправки", category="error")
+    if form.validate_on_submit() and request.method == "POST":
+        user = current_user
+        price = Price(
+            user_id=user.id,
+            company_id=user.company_id,
+            tko=form.tko.data,
+            maintenance_common=form.maintenance_common.data,
+            drainage_common=form.drainage_common.data,
+            cold_water_common=form.cold_water_common.data,
+            hot_water_volume_common=form.hot_water_volume_common.data,
+            hot_water_energy_common=form.hot_water_energy_common.data,
+            electricity_common=form.electricity_common.data,
+            heating=form.heating.data,
+            cold_water=form.cold_water.data,
+            hot_water_volume=form.cold_water.data,
+            hot_water_energy=form.hot_water_energy.data,
+            drainage=form.drainage.data,
+            gas=form.gas.data,
+            renovation=form.renovation.data,
+        )
+        db.session.add(price)
+        db.session.commit()
+        flash('Данные внесены успешно')
+        redirect(url_for('prices'))
 
     return render_template("prices.html", title="Тарифы", menu=menu, url=url, form=form)
 

@@ -5,7 +5,7 @@
 
 <form action="/prices" method="post">
     {{ form.hidden_tag() }}
-    {% for f in form %}
+    {% for f in form if f.widget.input_type != 'hidden' %}
     <p>
         {{ f.label }}
         {{ f }}
