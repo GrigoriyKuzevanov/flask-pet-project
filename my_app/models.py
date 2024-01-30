@@ -58,14 +58,15 @@ class Price(db.Model):
 
     def __repr__(self):
         return f"for user {self.user_id}, created at {self.created_at}"
-    
+
+
 class Company(db.Model):
     __tablename__ = "companies"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
     prices = db.relationship("Price", backref="company", lazy="dynamic")
-    users = db.relationship("User", backref="company", lazy='dynamic')
+    users = db.relationship("User", backref="company", lazy="dynamic")
     email = db.Column(db.String(120), index=True, unique=True)
     website = db.Column(db.String(256))
     address = db.Column(db.String(512))
