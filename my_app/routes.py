@@ -6,7 +6,7 @@ from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
 from my_app import app, db
-from my_app.forms import LoginForm, RegistrationForm
+from my_app.forms import LoginForm, RegistrationForm, PriceForm
 from my_app.models import User
 
 load_dotenv()
@@ -47,13 +47,14 @@ def show_document(doc_num):
 @login_required
 def prices():
     url = url_for("prices")
+    form = PriceForm()
     if request.method == "POST":
         if len(request.form["username"]) > 2:
             flash("Сообщение отправлено", category="success")
         else:
             flash("Ошибка отправки", category="error")
 
-    return render_template("prices.html", title="Тарифы", menu=menu, url=url)
+    return render_template("prices.html", title="Тарифы", menu=menu, url=url, form=form)
 
 
 @app.route("/stats")

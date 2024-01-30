@@ -3,5 +3,15 @@
 {% block content %}
 {{ super() }}
 
+<form action="/prices" method="post">
+    {{ form.hidden_tag() }}
+    {% for f in form %}
+    <p>
+        {{ f.label }}
+        {{ f }}
+    </p>
+    {% endfor %}
+</form>
+
 
 {% endblock %}

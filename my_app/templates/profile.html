@@ -7,10 +7,10 @@
 <hr>
 <p>{{ user.username }}</p>
 <p>{{ user.email }}</p>
-<p>{{ user.req_at }}</p>
+<p>{{ user.reg_at.strftime("%d %b %Y, %H:%M") }}</p>
 <p>{{ user.company }}</p>
 {% for p in user.prices %}
-<p>p</p>
+<p>{{ p }}</p>
 {% endfor %}
 
 {% endblock %}
