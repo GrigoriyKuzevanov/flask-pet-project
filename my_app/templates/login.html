@@ -5,22 +5,36 @@
 
 <form action="/login" method="post">
     {{ form.hidden_tag() }}
-    <p>
-        {{ form.username.label(class='label') }}
-        {{ form.username(size=32) }}
-    </p>
-    <p>
-        {{ form.password.label }}
-        {{ form.password(size=32) }}
-    </p>
-    <p>
-        {{ form.remember_me.label }}
-        {{ form.remember_me }}
-    </p>
-    <p>
-        {{ form.submit() }}
-    </p>
+    <div class="mb-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-1">
+                {{ form.username.label(class='col-form-label') }}
+            </div>
+            <div class="col-auto">
+                {{ form.username(class='form-control', size=32) }}
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-1">
+                {{ form.password.label(class='col-form-label') }}
+            </div>
+            <div class="col-auto">
+                {{ form.password(class='form-control', size=32) }}
+            </div>
+        </div>
+    </div>
+    <div class="mb-3 form-check">
+        {{ form.remember_me(class='form-check-input') }}
+        {{ form.remember_me.label(class='form-check-label') }}
+    </div>
+    {{ form.submit(class='btn btn-primary') }}
 </form>
+<div class="col-auto my-4">   
+    <p>Для регистрации в сервисе перейдите по  
+        <a class="link" href="{{ url_for('register') }}">ссылке</a>
+    </p>
+</div>
 
-<p><a href="{{ url_for('register') }}" >Зарегистрироваться</a></p>
 {% endblock %}

@@ -3,18 +3,23 @@
 {% block content %}
 {{ super() }}
 
-<h1>Регистрация</h1>
-<form action="/register" method="post">
+<form action="/prices" method="post">
     {{ form.hidden_tag() }}
     {% for f in form if f.widget.input_type != 'hidden' %}
-    <p>
-        {{ f.label }}
-        {{ f }}
-        {% for error in f.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
+    {% if f.label != form.submit.label %}
+    <div class="mb-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-2">
+                {{ f.label(class='col-form-label') }}
+            </div>
+            <div class="col-auto">
+                {{ f(class='form-control', size=32) }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
     {% endfor %}
+    {{ form.submit(class='btn btn-primary') }}
 </form>
 
 {% endblock %}

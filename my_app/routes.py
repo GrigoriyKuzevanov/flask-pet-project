@@ -46,10 +46,14 @@ def show_document(doc_num):
 @app.route("/prices", methods=["POST", "GET"])
 @login_required
 def prices():
+    user = current_user
     url = url_for("prices")
-    form = PriceForm()
+    obj = Price.query.filter_by(user_id=user.id).order_by(Price.created_at).first()
+    if obj:
+        form = PriceForm(obj=obj)
+    else:
+        form = PriceForm()
     if form.validate_on_submit() and request.method == "POST":
-        user = current_user
         price = Price(
             user_id=user.id,
             company_id=user.company_id,
@@ -68,6 +72,8 @@ def prices():
             gas=form.gas.data,
             renovation=form.renovation.data,
         )
+        print(type(form.tko.data))
+        print(form.tko.data)
         db.session.add(price)
         db.session.commit()
         flash('Данные внесены успешно')

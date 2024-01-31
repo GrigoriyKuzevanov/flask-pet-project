@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import (BooleanField, FloatField, PasswordField, StringField,
                      SubmitField)
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Optional
 
 from my_app.models import User
 
@@ -34,18 +34,18 @@ class RegistrationForm(FlaskForm):
 
 
 class PriceForm(FlaskForm):
-    tko = FloatField("Обращение с ТКО (руб/м.куб)")
-    maintenance_common = FloatField("Содержание жилья (руб/м.кв)")
-    drainage_common = FloatField("Водоотведение (общее) (руб/м.куб)")
-    cold_water_common = FloatField("ХВС (общее) (руб/м.куб)")
-    hot_water_volume_common = FloatField("ГВС теплоноситель (общее) (руб/м.куб)")
-    hot_water_energy_common = FloatField("ГВС тепловая энергия (общее) (руб/Гкал)")
-    electricity_common = FloatField("Электроэнергия (общее) (руб/кВт.ч)")
-    heating = FloatField("Отопление (руб/Гкал)")
-    cold_water = FloatField("ХВС (руб/м.куб)")
-    hot_water_volume = FloatField("ГВС теплоноситель (руб/м.куб)")
-    hot_water_energy = FloatField("ГВС тепловая энергия (руб/Гкал)")
-    drainage = FloatField("Водоотведение (руб/м.куб)")
-    gas = FloatField("Газоснабжение (руб/м.куб)")
-    renovation = FloatField("Взнос на кап. ремонт (руб/м.кв)")
-    submit = SubmitField("Отправить")
+    tko = FloatField("Обращение с ТКО (руб/м.куб)", validators=[Optional()])
+    maintenance_common = FloatField("Содержание жилья (руб/м.кв)", validators=[Optional()])
+    drainage_common = FloatField("Водоотведение (общее) (руб/м.куб)", validators=[Optional()])
+    cold_water_common = FloatField("ХВС (общее) (руб/м.куб)", validators=[Optional()])
+    hot_water_volume_common = FloatField("ГВС теплоноситель (общее) (руб/м.куб)", validators=[Optional()])
+    hot_water_energy_common = FloatField("ГВС тепловая энергия (общее) (руб/Гкал)", validators=[Optional()])
+    electricity_common = FloatField("Электроэнергия (общее) (руб/кВт.ч)", validators=[Optional()])
+    heating = FloatField("Отопление (руб/Гкал)", validators=[Optional()])
+    cold_water = FloatField("ХВС (руб/м.куб)", validators=[Optional()])
+    hot_water_volume = FloatField("ГВС теплоноситель (руб/м.куб)", validators=[Optional()])
+    hot_water_energy = FloatField("ГВС тепловая энергия (руб/Гкал)", validators=[Optional()])
+    drainage = FloatField("Водоотведение (руб/м.куб)", validators=[Optional()])
+    gas = FloatField("Газоснабжение (руб/м.куб)", validators=[Optional()])
+    renovation = FloatField("Взнос на кап. ремонт (руб/м.кв)", validators=[Optional()])
+    submit = SubmitField("Отправить", validators=[Optional()])
