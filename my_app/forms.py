@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import (BooleanField, FloatField, PasswordField, StringField,
-                     SubmitField)
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Optional
+                     SubmitField, DateTimeField, SelectField)
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Optional, InputRequired
 
 from my_app.models import User
 
@@ -31,6 +31,26 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError("Данный почтовый адрес уже используется в системе")
+
+
+class ProfileForm(FlaskForm):
+    username = StringField("Логин", validators=[DataRequired()])
+    email = StringField('Электронная почта', validators=[DataRequired()])
+    reg_at = DateTimeField('Дата регистрации', validators=[Optional()])
+    company = SelectField('Управляющая компания', coerce=int, validators=[InputRequired()])
+    submit = SubmitField("Изменить профиль", validators=[Optional()])
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        print(username.data, user.username)
+        if user is not None and username.data != user.username:
+            raise ValidationError("Данный логин уже используется в системе")
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        print(self.username.data, user.email)
+        if user is not None and self.username.data != user.username:
+            raise ValidationError("Данный почтовый адрес уже используется в системе")  
 
 
 class PriceForm(FlaskForm):

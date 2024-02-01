@@ -6,8 +6,8 @@ from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
 from my_app import app, db
-from my_app.forms import LoginForm, RegistrationForm, PriceForm
-from my_app.models import User, Price
+from my_app.forms import LoginForm, RegistrationForm, PriceForm, ProfileForm
+from my_app.models import User, Price, Company
 
 load_dotenv()
 
@@ -72,8 +72,6 @@ def prices():
             gas=form.gas.data,
             renovation=form.renovation.data,
         )
-        print(type(form.tko.data))
-        print(form.tko.data)
         db.session.add(price)
         db.session.commit()
         flash('Данные внесены успешно')
@@ -135,13 +133,25 @@ def register():
     return render_template("register.html", title="Регистрация", form=form, menu=menu)
 
 
-@app.route("/profile/<username>")
+@app.route("/profile/<username>", methods=['GET', "POST"])
 @login_required
 def profile(username):
     url = url_for("profile", username=username)
+    user = current_user
+    title = f"Профиль пользователя <{user.username}>"
     title = "Профиль пользователя"
-    user = User.query.filter_by(username=username).first_or_404()
-    return render_template("profile.html", user=user, title=title, url=url, menu=menu)
+    companies = Company.query.all()
+    companies_list = [(c.id, c.name) for c in companies]
+    form = ProfileForm(obj=user)
+    form.company.choices = companies_list
+    if form.validate_on_submit() and request.method == 'POST':
+        user.username = form.username.data
+        user.email = form.email.data
+        user.company_id = form.company.data
+        db.session.commit()
+        flash('Профиль обновлен успешно')
+        redirect(url)
+    return render_template("profile.html", user=user, title=title, url=url, menu=menu, form=form)
 
 
 @app.errorhandler(404)
