@@ -9,14 +9,15 @@ from my_app import app, db
 from my_app.forms import LoginForm, PriceForm, ProfileForm, RegistrationForm
 from my_app.models import Company, Price, User
 
+
 load_dotenv()
 
 
 menu = [
     {"name": "Главная", "url": "/"},
-    {"name": "Платежные документы", "url": "/docs"},
-    {"name": "Тарифы", "url": "/prices"},
     {"name": "Статистика", "url": "/stats"},
+    {"name": "Платежные документы", "url": "/insert_docs"},
+    {"name": "Тарифы", "url": "/insert_prices"},
 ]
 
 
@@ -27,27 +28,40 @@ def index():
     return render_template("index.html", menu=menu, url=url, title=title)
 
 
-@app.route("/docs")
+@app.route("/insert_docs")
 @login_required
-def documents():
-    url = url_for("documents")
+def insert_docs():
+    url = url_for("insert_docs")
+    title = "Внести документ"
     return render_template(
-        "documents.html", title="Платежные документы", menu=menu, url=url
+        "insert_docs.html", title=title, menu=menu, url=url
     )
 
+@app.route('/show_docs')
+def show_docs():
+    url = url_for("show_docs")
+    title = "Мои документы"
+    return render_template("show_docs.html", url=url, title=title)
 
-# конвертеры: path, int, float (<int:doc_num>)
+@app.route('/show_prices')
+def show_prices():
+    url = url_for("show_prices")
+    title = "Мои тарифы"
+    return render_template("show_prices.html", url=url, title=title)
+
+
+# # конвертеры: path, int, float (<int:doc_num>)
 @app.route("/document/<doc_num>")
 @login_required
 def show_document(doc_num):
     return f"Пользователь: {doc_num}"
 
 
-@app.route("/prices", methods=["POST", "GET"])
+@app.route("/insert_prices", methods=["POST", "GET"])
 @login_required
-def prices():
+def insert_prices():
     user = current_user
-    url = url_for("prices")
+    url = url_for("insert_prices")
     obj = Price.query.filter_by(user_id=user.id).order_by(Price.created_at).first()
     if obj:
         form = PriceForm(obj=obj)
@@ -77,14 +91,15 @@ def prices():
         flash("Данные внесены успешно")
         redirect(url_for("prices"))
 
-    return render_template("prices.html", title="Тарифы", menu=menu, url=url, form=form)
+    return render_template("insert_prices.html", title="Тарифы", menu=menu, url=url, form=form)
 
 
 @app.route("/stats")
 @login_required
 def stats():
     url = url_for("stats")
-    return render_template("stats.html", title="Статистика", menu=menu, url=url)
+    title = "Статистика"
+    return render_template("stats.html", title=title, menu=menu, url=url)
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -138,7 +153,6 @@ def register():
 def profile(username):
     url = url_for("profile", username=username)
     user = current_user
-    title = f"Профиль пользователя <{user.username}>"
     title = "Профиль пользователя"
     companies = Company.query.all()
     companies_list = [(c.id, c.name) for c in companies]

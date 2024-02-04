@@ -1,0 +1,68 @@
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <!-- <a class="navbar-brand" href="#">Коммуналка</a> -->
+        <button class="navbar-toggler my-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            {% block mainmenu %}
+            <ul class="navbar-nav">
+
+                {%- for m in menu -%}
+                {% if m.url == url %}
+                <li class="nav-item px-2">
+                    <a class="nav-link active" aria-current="page" href="{{ m.url }}">{{ m.name
+                        }}</a>
+                </li>
+                {% else %}
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="{{ m.url }}">{{ m.name }}</a>
+                </li>
+                {% endif%}
+                {%- endfor -%}
+
+                {% if current_user.is_anonymous and url == url_for('login') %}
+                <li class="nav-item px-2">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('login') }}">Войти</a>
+                </li>
+                {% elif current_user.is_anonymous %}
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="{{ url_for('login') }}">Войти</a>
+                </li>
+                {% elif url == url_for('logout') %}
+                <li class="nav-item px-2">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('logout') }}">Выйти</a>
+                </li>
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="{{ url_for('profile', username = current_user.username) }}">Профиль
+                        пользователя</a>
+                </li>
+                {% elif url == url_for('profile', username=current_user.username) %}
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
+                </li>
+                <li class="nav-item px-2">
+                    <a class="nav-link active" aria-current="page"
+                        href="{{ url_for('profile', username = current_user.username) }}">Профиль
+                        пользователя</a>
+                </li>
+                {% else %}
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
+                </li>
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="{{ url_for('profile', username = current_user.username) }}">Профиль
+                        пользователя</a>
+                </li>
+                {% endif%}
+
+
+            </ul>
+            {% endblock mainmenu %}
+        </div>
+    </div>
+</nav>
+<!-- End navigation -->

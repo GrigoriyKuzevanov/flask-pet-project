@@ -38,6 +38,19 @@ body {
     justify-content: center;
 }
 
+.dropdown-menu {
+    background-color: #5c7db2;
+}
+
+.dropdown-item {
+    color: bisque;
+}
+
+.dropdown-item:hover {
+    background-color: #4a72b2;
+    color: rgb(8, 17, 69);
+}
+
 /* Breadcrumbs */
 .breadcrumbs-nav {
     display: flex;
@@ -75,6 +88,14 @@ body {
     list-style-type: none;
     background-color: #5c7db2;
     color: bisque;
+}
+
+.h-form-name {
+    color: bisque;
+    background-color: #5c7db2;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 form .btn-primary {

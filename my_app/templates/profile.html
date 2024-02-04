@@ -3,6 +3,7 @@
 {% block content %}
 {{ super() }}
 
+<!-- <h3 class="h-form-name">Изменить данные пользователя {{ user }}</h3> -->
 <form action="/profile/{{ user.username }}" method="post">
     {{ form.hidden_tag() }}
     <div class="mb-3">
