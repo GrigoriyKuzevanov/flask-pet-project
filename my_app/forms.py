@@ -37,6 +37,8 @@ class RegistrationForm(FlaskForm):
 class ProfileForm(FlaskForm):
     username = StringField("Логин", validators=[DataRequired()])
     email = StringField("Электронная почта", validators=[DataRequired()])
+    first_name = StringField("Имя")
+    last_name = StringField("Фамилия")
     reg_at = DateTimeField("Дата регистрации", validators=[Optional()])
     company = SelectField(
         "Управляющая компания", coerce=int, validators=[InputRequired()]

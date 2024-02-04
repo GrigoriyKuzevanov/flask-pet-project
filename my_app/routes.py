@@ -161,6 +161,8 @@ def profile(username):
     if form.validate_on_submit() and request.method == "POST":
         user.username = form.username.data
         user.email = form.email.data
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
         user.company_id = form.company.data
         db.session.commit()
         flash("Профиль обновлен успешно")
