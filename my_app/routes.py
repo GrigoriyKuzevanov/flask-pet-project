@@ -9,7 +9,6 @@ from my_app import app, db
 from my_app.forms import LoginForm, PriceForm, ProfileForm, RegistrationForm
 from my_app.models import Company, Price, User
 
-
 load_dotenv()
 
 
@@ -33,17 +32,17 @@ def index():
 def insert_docs():
     url = url_for("insert_docs")
     title = "Внести документ"
-    return render_template(
-        "insert_docs.html", title=title, menu=menu, url=url
-    )
+    return render_template("insert_docs.html", title=title, menu=menu, url=url)
 
-@app.route('/show_docs')
+
+@app.route("/show_docs")
 def show_docs():
     url = url_for("show_docs")
     title = "Мои документы"
     return render_template("show_docs.html", url=url, title=title)
 
-@app.route('/show_prices')
+
+@app.route("/show_prices")
 def show_prices():
     url = url_for("show_prices")
     title = "Мои тарифы"
@@ -91,7 +90,9 @@ def insert_prices():
         flash("Данные внесены успешно")
         redirect(url_for("prices"))
 
-    return render_template("insert_prices.html", title="Тарифы", menu=menu, url=url, form=form)
+    return render_template(
+        "insert_prices.html", title="Тарифы", menu=menu, url=url, form=form
+    )
 
 
 @app.route("/stats")
@@ -169,20 +170,4 @@ def profile(username):
         redirect(url)
     return render_template(
         "profile.html", user=user, title=title, url=url, menu=menu, form=form
-    )
-
-
-@app.errorhandler(404)
-def page_not_found(error):
-    return (
-        render_template("errors/page404.html", title="Страница не найдена", menu=menu),
-        404,
-    )
-
-
-@app.errorhandler(500)
-def server_error(error):
-    return (
-        render_template("errors/page500.html", title="Ошибка сервера", menu=menu),
-        500,
     )
