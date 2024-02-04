@@ -5,6 +5,7 @@ from wtforms.validators import (DataRequired, Email, EqualTo, InputRequired,
                                 Optional, ValidationError)
 
 from my_app.models import User
+from flask_login import current_user
 
 
 class LoginForm(FlaskForm):
@@ -47,14 +48,12 @@ class ProfileForm(FlaskForm):
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
-        print(username.data, user.username)
-        if user is not None and username.data != user.username:
+        if user is not None and username.data != current_user.username:
             raise ValidationError("Данный логин уже используется в системе")
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
-        print(self.username.data, user.email)
-        if user is not None and self.username.data != user.username:
+        if user is not None and current_user.username != user.username:
             raise ValidationError("Данный почтовый адрес уже используется в системе")
 
 
