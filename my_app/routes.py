@@ -34,7 +34,7 @@ def insert_docs():
     user = current_user
     url = url_for("insert_docs")
     title = "Внести документ"
-    price = Price.query.first()
+    price = Price.query.filter_by(user_id=current_user.id).first()
     obj = Consumption.query.first()
     if obj:
         form = ConsumptionForm(obj=obj)
