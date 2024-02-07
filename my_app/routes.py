@@ -157,7 +157,7 @@ def profile(username):
     title = "Профиль пользователя"
     companies = Company.query.all()
     companies_list = [(c.id, c.name) for c in companies]
-    form = ProfileForm(obj=user)
+    form = ProfileForm(obj=user, original_username=user.username, original_email=user.email)
     form.company.choices = companies_list
     if form.validate_on_submit() and request.method == "POST":
         user.username = form.username.data

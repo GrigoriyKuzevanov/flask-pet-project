@@ -46,15 +46,22 @@ class ProfileForm(FlaskForm):
     )
     submit = SubmitField("Изменить профиль", validators=[Optional()])
 
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user is not None and username.data != current_user.username:
-            raise ValidationError("Данный логин уже используется в системе")
+    def __init__(self, original_username, original_email, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.original_username = original_username
+        self.original_email = original_email
 
+    def validate_username(self, username):
+        if username.data != self.original_username:
+            user = User.query.filter_by(username=username.data).first()
+            if user is not None:
+                raise ValidationError("Данный логин уже используется в системе")
+            
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user is not None and current_user.username != user.username:
-            raise ValidationError("Данный почтовый адрес уже используется в системе")
+        if email.data != self.original_email:
+            user = User.query.filter_by(email=email.data).first()
+            if user is not None:
+                raise ValidationError("Данный почтовый адрес уже используется в системе")
 
 
 class PriceForm(FlaskForm):
