@@ -4,5 +4,7 @@
 {{ super() }}
 
 <p>Содержимое страницы "Мои документы"</p>
-
+{% for doc in docs %}
+<p>{{ doc }}</p>
+{% endfor %}
 {% endblock %}

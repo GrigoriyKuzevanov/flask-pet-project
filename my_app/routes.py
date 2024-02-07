@@ -6,8 +6,9 @@ from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
 from my_app import app, db
-from my_app.forms import LoginForm, PriceForm, ProfileForm, RegistrationForm
-from my_app.models import Company, Price, User
+from my_app.forms import (ConsumptionForm, LoginForm, PriceForm, ProfileForm,
+                          RegistrationForm)
+from my_app.models import Company, Consumption, Price, User
 
 load_dotenv()
 
@@ -27,19 +28,51 @@ def index():
     return render_template("index.html", menu=menu, url=url, title=title)
 
 
-@app.route("/insert_docs")
+@app.route("/insert_docs", methods=["POST", "GET"])
 @login_required
 def insert_docs():
+    user = current_user
     url = url_for("insert_docs")
     title = "Внести документ"
-    return render_template("insert_docs.html", title=title, menu=menu, url=url)
+    obj = Consumption.query.first()
+    if obj:
+        form = ConsumptionForm(obj=obj)
+    else:
+        form = ConsumptionForm()
+    if form.validate_on_submit() and request.method == "POST":
+        consumption = Consumption(
+            user_id=user.id,
+            tko=form.tko.data,
+            maintenance_common=form.maintenance_common.data,
+            drainage_common=form.drainage_common.data,
+            cold_water_common=form.cold_water_common.data,
+            hot_water_volume_common=form.hot_water_volume_common.data,
+            hot_water_energy_common=form.hot_water_energy_common.data,
+            electricity_common=form.electricity_common.data,
+            heating=form.heating.data,
+            cold_water=form.cold_water.data,
+            hot_water_volume=form.cold_water.data,
+            hot_water_energy=form.hot_water_energy.data,
+            drainage=form.drainage.data,
+            gas=form.gas.data,
+            renovation=form.renovation.data,
+        )
+        db.session.add(consumption)
+        db.session.commit()
+        flash("Данные внесены успешно")
+        redirect(url_for("show_docs"))
+
+    return render_template(
+        "insert_docs.html", title=title, menu=menu, url=url, form=form
+    )
 
 
 @app.route("/show_docs")
 def show_docs():
     url = url_for("show_docs")
     title = "Мои документы"
-    return render_template("show_docs.html", url=url, title=title)
+    docs = Consumption.query.all()
+    return render_template("show_docs.html", url=url, title=title, docs=docs)
 
 
 @app.route("/show_prices")
@@ -157,7 +190,9 @@ def profile(username):
     title = "Профиль пользователя"
     companies = Company.query.all()
     companies_list = [(c.id, c.name) for c in companies]
-    form = ProfileForm(obj=user, original_username=user.username, original_email=user.email)
+    form = ProfileForm(
+        obj=user, original_username=user.username, original_email=user.email
+    )
     form.company.choices = companies_list
     if form.validate_on_submit() and request.method == "POST":
         user.username = form.username.data

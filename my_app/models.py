@@ -24,6 +24,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256))
     reg_at = db.Column(db.TIMESTAMP, index=True, default=datetime.utcnow)
     prices = db.relationship("Price", backref="user", lazy="dynamic")
+    consumptions = db.relationship("Consumption", backref="user", lazy="dynamic")
     company_id = db.Column(db.Integer, db.ForeignKey("companies.id"))
 
     def __repr__(self):
@@ -77,3 +78,28 @@ class Company(db.Model):
 
     def __repr__(self):
         return self.name
+
+
+class Consumption(db.Model):
+    __tablename__ = "consumption"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_at = db.Column(db.TIMESTAMP, index=True, default=datetime.utcnow)
+    tko = db.Column(db.Float(12))
+    maintenance_common = db.Column(db.Float(12))
+    drainage_common = db.Column(db.Float(12))
+    cold_water_common = db.Column(db.Float(12))
+    hot_water_volume_common = db.Column(db.Float(12))
+    hot_water_energy_common = db.Column(db.Float(12))
+    electricity_common = db.Column(db.Float(12))
+    heating = db.Column(db.Float(12))
+    cold_water = db.Column(db.Float(12))
+    hot_water_volume = db.Column(db.Float(12))
+    hot_water_energy = db.Column(db.Float(12))
+    drainage = db.Column(db.Float(12))
+    gas = db.Column(db.Float(12))
+    renovation = db.Column(db.Float(12))
+
+    def __repr__(self):
+        return f"Consumption {self.id}, created at {self.created_at}"

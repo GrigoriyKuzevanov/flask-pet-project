@@ -56,12 +56,14 @@ class ProfileForm(FlaskForm):
             user = User.query.filter_by(username=username.data).first()
             if user is not None:
                 raise ValidationError("Данный логин уже используется в системе")
-            
+
     def validate_email(self, email):
         if email.data != self.original_email:
             user = User.query.filter_by(email=email.data).first()
             if user is not None:
-                raise ValidationError("Данный почтовый адрес уже используется в системе")
+                raise ValidationError(
+                    "Данный почтовый адрес уже используется в системе"
+                )
 
 
 class PriceForm(FlaskForm):
@@ -93,4 +95,32 @@ class PriceForm(FlaskForm):
     drainage = FloatField("Водоотведение (руб/м.куб)", validators=[Optional()])
     gas = FloatField("Газоснабжение (руб/м.куб)", validators=[Optional()])
     renovation = FloatField("Взнос на кап. ремонт (руб/м.кв)", validators=[Optional()])
+    submit = SubmitField("Отправить", validators=[Optional()])
+
+
+class ConsumptionForm(FlaskForm):
+    tko = FloatField("Обращение с ТКО (м.куб)", validators=[Optional()])
+    maintenance_common = FloatField("Содержание жилья (м.кв)", validators=[Optional()])
+    drainage_common = FloatField(
+        "Водоотведение (общее) (м.куб)", validators=[Optional()]
+    )
+    cold_water_common = FloatField("ХВС (общее) (м.куб)", validators=[Optional()])
+    hot_water_volume_common = FloatField(
+        "ГВС теплоноситель (общее) (м.куб)", validators=[Optional()]
+    )
+    hot_water_energy_common = FloatField(
+        "ГВС тепловая энергия (общее) (Гкал)", validators=[Optional()]
+    )
+    electricity_common = FloatField(
+        "Электроэнергия (общее) (кВт.ч)", validators=[Optional()]
+    )
+    heating = FloatField("Отопление (Гкал)", validators=[Optional()])
+    cold_water = FloatField("ХВС (м.куб)", validators=[Optional()])
+    hot_water_volume = FloatField("ГВС теплоноситель (м.куб)", validators=[Optional()])
+    hot_water_energy = FloatField(
+        "ГВС тепловая энергия (Гкал)", validators=[Optional()]
+    )
+    drainage = FloatField("Водоотведение (м.куб)", validators=[Optional()])
+    gas = FloatField("Газоснабжение (м.куб)", validators=[Optional()])
+    renovation = FloatField("Взнос на кап. ремонт (м.кв)", validators=[Optional()])
     submit = SubmitField("Отправить", validators=[Optional()])

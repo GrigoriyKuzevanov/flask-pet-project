@@ -3,6 +3,40 @@
 {% block content %}
 {{ super() }}
 
-<p>Содержимое страницы "Платежные документы"</p>
+<div class="mb-3 tip">
+    <p>* Подсказки</p>
+    <ul>
+        <li>
+            <p>Введите объем потребления в виде десятичной дроби</p>
+        </li>
+        <li>
+            <p>Разделитель - точка</p>
+        </li>
+        <li>
+            <p>Образец ввода: 21.0 </p>
+        </li>
+    </ul>
+</div>
+<form action="/insert_docs" method="post">
+    {{ form.hidden_tag() }}
+    {% for f in form if f.widget.input_type != 'hidden' %}
+    {% if f.label != form.submit.label %}
+    <div class="mb-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-4">
+                {{ f.label(class='col-form-label') }}
+            </div>
+            <div class="col-auto">
+                {{ f(class='form-control', size=10) }}
+            </div>
+            {% for error in f.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {{ form.submit(class='btn btn-primary') }}
+</form>
 
 {% endblock %}
