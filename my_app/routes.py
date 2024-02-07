@@ -8,7 +8,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from my_app import app, db
 from my_app.forms import (ConsumptionForm, LoginForm, PriceForm, ProfileForm,
                           RegistrationForm)
-from my_app.models import Company, Consumption, Price, User
+from my_app.models import Company, Consumption, Price, User, Invoice
 
 load_dotenv()
 
@@ -34,6 +34,7 @@ def insert_docs():
     user = current_user
     url = url_for("insert_docs")
     title = "Внести документ"
+    price = Price.query.first()
     obj = Consumption.query.first()
     if obj:
         form = ConsumptionForm(obj=obj)
@@ -57,7 +58,27 @@ def insert_docs():
             gas=form.gas.data,
             renovation=form.renovation.data,
         )
+
+        invoice = Invoice(
+            user_id=user.id,
+            tko=round(form.tko.data * price.tko, 2),
+            maintenance_common=round(form.maintenance_common.data * price.maintenance_common, 2),
+            drainage_common=round(form.drainage_common.data * price.drainage_common, 2),
+            cold_water_common=round(form.cold_water_common.data * price.cold_water_common, 2),
+            hot_water_volume_common=round(form.hot_water_volume_common.data * price.hot_water_volume_common, 2),
+            hot_water_energy_common=round(form.hot_water_energy_common.data * price.hot_water_energy_common, 2),
+            electricity_common=round(form.electricity_common.data * price.electricity_common, 2),
+            heating=round(form.heating.data * price.heating, 2),
+            cold_water=round(form.cold_water.data * price.cold_water, 2),
+            hot_water_volume=round(form.hot_water_volume.data * price.hot_water_volume, 2),
+            hot_water_energy=round(form.hot_water_energy.data * price.hot_water_energy, 2),
+            drainage=round(form.drainage.data * price.drainage, 2),
+            gas=round(form.gas.data * price.gas, 2),
+            renovation=round(form.renovation.data * price.renovation, 2),
+        )
+
         db.session.add(consumption)
+        db.session.add(invoice)
         db.session.commit()
         flash("Данные внесены успешно")
         redirect(url_for("show_docs"))
