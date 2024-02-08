@@ -104,11 +104,11 @@ class Consumption(db.Model):
     renovation = db.Column(db.Float(12))
 
     def __repr__(self):
-        return f"Consumption {self.id}, created at {self.created_at}"
+        return f"{self.created_at.strftime('%b')}-{self.id}"
 
 
 class Invoice(db.Model):
-    __tablename__ = 'invoices'
+    __tablename__ = "invoices"
 
     id = db.Column(db.Integer, primary_key=True)
     consumption_id = db.Column(db.Integer, db.ForeignKey("consumption.id"))
@@ -128,6 +128,6 @@ class Invoice(db.Model):
     drainage = db.Column(db.Float(12))
     gas = db.Column(db.Float(12))
     renovation = db.Column(db.Float(12))
-    
+
     def __repr__(self):
         return f"Invoice {self.id}, created at {self.created_at}"

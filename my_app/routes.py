@@ -4,11 +4,12 @@ from urllib.parse import quote as url_quote
 from dotenv import load_dotenv
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
+from sqlalchemy.orm import joinedload
 
 from my_app import app, db
 from my_app.forms import (ConsumptionForm, LoginForm, PriceForm, ProfileForm,
                           RegistrationForm)
-from my_app.models import Company, Consumption, Price, User, Invoice
+from my_app.models import Company, Consumption, Invoice, Price, User
 
 load_dotenv()
 
@@ -65,16 +66,30 @@ def insert_docs():
             user_id=user.id,
             consumption_id=consumption.id,
             tko=round(form.tko.data * price.tko, 2),
-            maintenance_common=round(form.maintenance_common.data * price.maintenance_common, 2),
+            maintenance_common=round(
+                form.maintenance_common.data * price.maintenance_common, 2
+            ),
             drainage_common=round(form.drainage_common.data * price.drainage_common, 2),
-            cold_water_common=round(form.cold_water_common.data * price.cold_water_common, 2),
-            hot_water_volume_common=round(form.hot_water_volume_common.data * price.hot_water_volume_common, 2),
-            hot_water_energy_common=round(form.hot_water_energy_common.data * price.hot_water_energy_common, 2),
-            electricity_common=round(form.electricity_common.data * price.electricity_common, 2),
+            cold_water_common=round(
+                form.cold_water_common.data * price.cold_water_common, 2
+            ),
+            hot_water_volume_common=round(
+                form.hot_water_volume_common.data * price.hot_water_volume_common, 2
+            ),
+            hot_water_energy_common=round(
+                form.hot_water_energy_common.data * price.hot_water_energy_common, 2
+            ),
+            electricity_common=round(
+                form.electricity_common.data * price.electricity_common, 2
+            ),
             heating=round(form.heating.data * price.heating, 2),
             cold_water=round(form.cold_water.data * price.cold_water, 2),
-            hot_water_volume=round(form.hot_water_volume.data * price.hot_water_volume, 2),
-            hot_water_energy=round(form.hot_water_energy.data * price.hot_water_energy, 2),
+            hot_water_volume=round(
+                form.hot_water_volume.data * price.hot_water_volume, 2
+            ),
+            hot_water_energy=round(
+                form.hot_water_energy.data * price.hot_water_energy, 2
+            ),
             drainage=round(form.drainage.data * price.drainage, 2),
             gas=round(form.gas.data * price.gas, 2),
             renovation=round(form.renovation.data * price.renovation, 2),
@@ -94,7 +109,7 @@ def insert_docs():
 def show_docs():
     url = url_for("show_docs")
     title = "Мои документы"
-    docs = Consumption.query.all()
+    docs = Consumption.query.options(joinedload(Consumption.invoice))
     return render_template("show_docs.html", url=url, title=title, docs=docs)
 
 
@@ -102,7 +117,7 @@ def show_docs():
 def show_prices():
     url = url_for("show_prices")
     title = "Мои тарифы"
-    prices = Price.query.order_by(Price.created_at).all()
+    prices = Price.query.order_by(Price.created_at.desc()).all()
     return render_template("show_prices.html", url=url, title=title, prices=prices)
 
 

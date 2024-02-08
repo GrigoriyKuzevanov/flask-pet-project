@@ -4,7 +4,117 @@
 {{ super() }}
 
 <p>Содержимое страницы "Мои документы"</p>
-{% for doc in docs %}
-<p>{{ doc }}</p>
-{% endfor %}
+
+<div class="accordion" id="accordionTable">
+    {% for doc in docs %}
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ doc }}" aria-expanded="false" aria-controls="{{ doc }}">
+            {{ doc.created_at.strftime("%b-%Y") }}
+        </button>
+      </h2>
+      <div id="{{ doc }}" class="accordion-collapse collapse" data-bs-parent="#accordionTable">
+        <div class="accordion-body">
+          <table id="table-accordion" class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Наименование услуги</th>
+                    <th scope="col">Единица измерения</th>
+                    <th scope="col">Количество/объем потребления</th>
+                    <th scope="col">Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Обращение с ТКО</td>
+                    <td>м.куб</td>
+                    <td>{{ doc.tko }}</td>
+                    <td>{{ doc.invoice.tko }}</td>
+                </tr>
+                <tr>
+                    <td>Содержание жилья</td>
+                    <td>м.кв</td>
+                    <td>{{ doc.maintenance_common }}</td>
+                    <td>{{ doc.invoice.maintenance_common }}</td>
+                </tr>
+                <tr>
+                    <td>Водоотведение (общее)</td>
+                    <td>м.куб</td>
+                    <td>{{ doc.drainage_common }}</td>
+                    <td>{{ doc.invoice.drainage_common }}</td>
+                </tr>
+                <tr>
+                    <td>ХВС (общее)</td>
+                    <td>м.куб</td>
+                    <td>{{ doc.cold_water_common }}</td>
+                    <td>{{ doc.invoice.cold_water_common }}</td>
+                </tr>
+                <tr>
+                    <td>ГВС теплоноситель (общее)</td>
+                    <td>м.куб</td>
+                    <td>{{ doc.hot_water_volume_common }}</td>
+                    <td>{{ doc.invoice.hot_water_volume_common }}</td>
+                </tr>
+                <tr>
+                    <td>ГВС тепловая энергия (общее)</td>
+                    <td>Гкал</td>
+                    <td>{{ doc.hot_water_energy_common }}</td>
+                    <td>{{ doc.invoice.hot_water_energy_common }}</td>
+                </tr>
+                <tr>
+                    <td>Электроэнергия (общее)</td>
+                    <td>кВт.ч</td>
+                    <td>{{ doc.electricity_common }}</td>
+                    <td>{{ doc.invoice.electricity_common }}</td>
+                </tr>
+                <tr>
+                    <td>Отопление</td>
+                    <td>Гкал</td>
+                    <td>{{ doc.heating }}</td>
+                    <td>{{ doc.invoice.heating }}</td>
+                </tr>
+                <tr>
+                    <td>ХВС</td>
+                    <td>м.кв</td>
+                    <td>{{ doc.cold_water }}</td>
+                    <td>{{ doc.invoice.cold_water }}</td>
+                </tr>
+                <tr>
+                    <td>ГВС теплоноситель</td>
+                    <td>м.куб</td>
+                    <td>{{ doc.hot_water_volume }}</td>
+                    <td>{{ doc.invoice.hot_water_volume }}</td>
+                </tr>
+                <tr>
+                    <td>ГВС тепловая энергия</td>
+                    <td>Гкал</td>
+                    <td>{{ doc.hot_water_energy }}</td>
+                    <td>{{ doc.invoice.hot_water_energy }}</td>
+                </tr>
+                <tr>
+                    <td>Водоотведение</td>
+                    <td>м.куб</td>
+                    <td>{{ doc.drainage }}</td>
+                    <td>{{ doc.invoice.drainage }}</td>
+                </tr>
+                <tr>
+                    <td>Газоснабжение</td>
+                    <td>м.куб</td>
+                    <td>{{ doc.gas }}</td>
+                    <td>{{ doc.invoice.gas }}</td>
+                </tr>
+                <tr>
+                    <td>Взнос на кап. ремонт</td>
+                    <td>м.кв</td>
+                    <td>{{ doc.renovation }}</td>
+                    <td>{{ doc.invoice.renovation }}</td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
 {% endblock %}

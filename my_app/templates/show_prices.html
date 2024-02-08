@@ -4,7 +4,7 @@
 {{ super() }}
 
 
-<div class="accordion" id="accordionPrice">
+<div class="accordion" id="accordionTable">
     {% for p in prices %}
     <div class="accordion-item">
       <h2 class="accordion-header">
@@ -12,7 +12,7 @@
             {{ p.created_at.strftime("%b-%Y") }}
         </button>
       </h2>
-      <div id="{{ p }}" class="accordion-collapse collapse" data-bs-parent="#accordionPrice">
+      <div id="{{ p }}" class="accordion-collapse collapse" data-bs-parent="#accordionTable">
         <div class="accordion-body">
           <table id="table-accordion" class="table table-sm table-bordered">
             <thead>
