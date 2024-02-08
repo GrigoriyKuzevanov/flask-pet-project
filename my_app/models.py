@@ -61,7 +61,7 @@ class Price(db.Model):
     renovation = db.Column(db.Float(12))
 
     def __repr__(self):
-        return f"for user {self.user_id}, created at {self.created_at}"
+        return f"{self.created_at.strftime('%b')}-{self.id}"
 
 
 class Company(db.Model):
@@ -86,6 +86,7 @@ class Consumption(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    invoice = db.relationship("Invoice", uselist=False, backref="consumption")
     created_at = db.Column(db.TIMESTAMP, index=True, default=datetime.utcnow)
     tko = db.Column(db.Float(12))
     maintenance_common = db.Column(db.Float(12))
@@ -110,6 +111,7 @@ class Invoice(db.Model):
     __tablename__ = 'invoices'
 
     id = db.Column(db.Integer, primary_key=True)
+    consumption_id = db.Column(db.Integer, db.ForeignKey("consumption.id"))
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     created_at = db.Column(db.TIMESTAMP, index=True, default=datetime.utcnow)
     tko = db.Column(db.Float(12))

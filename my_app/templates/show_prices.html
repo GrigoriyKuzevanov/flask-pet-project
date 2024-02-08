@@ -3,6 +3,102 @@
 {% block content %}
 {{ super() }}
 
-<p>Содержимое страницы "Мои тарифы"</p>
+
+<div class="accordion" id="accordionPrice">
+    {% for p in prices %}
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ p }}" aria-expanded="false" aria-controls="{{ p }}">
+            {{ p.created_at.strftime("%b-%Y") }}
+        </button>
+      </h2>
+      <div id="{{ p }}" class="accordion-collapse collapse" data-bs-parent="#accordionPrice">
+        <div class="accordion-body">
+          <table id="table-accordion" class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Наименование услуги</th>
+                    <th scope="col">Единица измерения</th>
+                    <th scope="col">Тариф/ставка, рублей</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Обращение с ТКО</td>
+                    <td>м.куб</td>
+                    <td>{{ p.tko }}</td>
+                </tr>
+                <tr>
+                    <td>Содержание жилья</td>
+                    <td>м.кв</td>
+                    <td>{{ p.maintenance_common }}</td>
+                </tr>
+                <tr>
+                    <td>Водоотведение (общее)</td>
+                    <td>м.куб</td>
+                    <td>{{ p.drainage_common }}</td>
+                </tr>
+                <tr>
+                    <td>ХВС (общее)</td>
+                    <td>м.куб</td>
+                    <td>{{ p.cold_water_common }}</td>
+                </tr>
+                <tr>
+                    <td>ГВС теплоноситель (общее)</td>
+                    <td>м.куб</td>
+                    <td>{{ p.hot_water_volume_common }}</td>
+                </tr>
+                <tr>
+                    <td>ГВС тепловая энергия (общее)</td>
+                    <td>Гкал</td>
+                    <td>{{ p.hot_water_energy_common }}</td>
+                </tr>
+                <tr>
+                    <td>Электроэнергия (общее)</td>
+                    <td>кВт.ч</td>
+                    <td>{{ p.electricity_common }}</td>
+                </tr>
+                <tr>
+                    <td>Отопление</td>
+                    <td>Гкал</td>
+                    <td>{{ p.heating }}</td>
+                </tr>
+                <tr>
+                    <td>ХВС</td>
+                    <td>м.кв</td>
+                    <td>{{ p.cold_water }}</td>
+                </tr>
+                <tr>
+                    <td>ГВС теплоноситель</td>
+                    <td>м.куб</td>
+                    <td>{{ p.hot_water_volume }}</td>
+                </tr>
+                <tr>
+                    <td>ГВС тепловая энергия</td>
+                    <td>Гкал</td>
+                    <td>{{ p.hot_water_energy }}</td>
+                </tr>
+                <tr>
+                    <td>Водоотведение</td>
+                    <td>м.куб</td>
+                    <td>{{ p.drainage }}</td>
+                </tr>
+                <tr>
+                    <td>Газоснабжение</td>
+                    <td>м.куб</td>
+                    <td>{{ p.gas }}</td>
+                </tr>
+                <tr>
+                    <td>Взнос на кап. ремонт</td>
+                    <td>м.кв</td>
+                    <td>{{ p.renovation }}</td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 
 {% endblock %}

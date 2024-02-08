@@ -119,3 +119,17 @@ form .btn-primary:hover {
     font-style: italic;
     font-size: smaller;
 }
+
+
+/* Prices */
+
+/* #collapseOne {
+    background-color: #4c73b2;
+} */
+#table-accordion td{
+    background-color: #b2ccf1;
+}
+
+#table-accordion th {
+    background-color: #7caaea;
+}

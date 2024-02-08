@@ -58,9 +58,12 @@ def insert_docs():
             gas=form.gas.data,
             renovation=form.renovation.data,
         )
+        db.session.add(consumption)
+        db.session.commit()
 
         invoice = Invoice(
             user_id=user.id,
+            consumption_id=consumption.id,
             tko=round(form.tko.data * price.tko, 2),
             maintenance_common=round(form.maintenance_common.data * price.maintenance_common, 2),
             drainage_common=round(form.drainage_common.data * price.drainage_common, 2),
@@ -77,7 +80,6 @@ def insert_docs():
             renovation=round(form.renovation.data * price.renovation, 2),
         )
 
-        db.session.add(consumption)
         db.session.add(invoice)
         db.session.commit()
         flash("Данные внесены успешно")
@@ -100,7 +102,8 @@ def show_docs():
 def show_prices():
     url = url_for("show_prices")
     title = "Мои тарифы"
-    return render_template("show_prices.html", url=url, title=title)
+    prices = Price.query.order_by(Price.created_at).all()
+    return render_template("show_prices.html", url=url, title=title, prices=prices)
 
 
 # # конвертеры: path, int, float (<int:doc_num>)
@@ -142,7 +145,7 @@ def insert_prices():
         db.session.add(price)
         db.session.commit()
         flash("Данные внесены успешно")
-        redirect(url_for("prices"))
+        redirect(url_for("show_prices"))
 
     return render_template(
         "insert_prices.html", title="Тарифы", menu=menu, url=url, form=form
