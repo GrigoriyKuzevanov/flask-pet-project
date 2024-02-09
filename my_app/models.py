@@ -57,6 +57,7 @@ class Price(db.Model):
     hot_water_volume = db.Column(db.Float(12))
     hot_water_energy = db.Column(db.Float(12))
     drainage = db.Column(db.Float(12))
+    electricity = db.Column(db.Float(12))
     gas = db.Column(db.Float(12))
     renovation = db.Column(db.Float(12))
 
@@ -100,8 +101,10 @@ class Consumption(db.Model):
     hot_water_volume = db.Column(db.Float(12))
     hot_water_energy = db.Column(db.Float(12))
     drainage = db.Column(db.Float(12))
+    electricity = db.Column(db.Float(12))
     gas = db.Column(db.Float(12))
     renovation = db.Column(db.Float(12))
+    invoice_date = db.Column(db.Date, index=True)
 
     def __repr__(self):
         return f"{self.created_at.strftime('%b')}-{self.id}"
@@ -126,8 +129,16 @@ class Invoice(db.Model):
     hot_water_volume = db.Column(db.Float(12))
     hot_water_energy = db.Column(db.Float(12))
     drainage = db.Column(db.Float(12))
+    electricity = db.Column(db.Float(12))
     gas = db.Column(db.Float(12))
     renovation = db.Column(db.Float(12))
+
+    invoice_date = db.Column(db.Date, index=True)
+
+    recalculation = db.Column(db.Float(12))
+    common_total = db.Column(db.Float(12))
+    variable_total = db.Column(db.Float(12))
+    total = db.Column(db.Float(12))
 
     def __repr__(self):
         return f"Invoice {self.id}, created at {self.created_at}"

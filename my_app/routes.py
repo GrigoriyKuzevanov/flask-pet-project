@@ -35,8 +35,14 @@ def insert_docs():
     user = current_user
     url = url_for("insert_docs")
     title = "Внести документ"
-    price = Price.query.filter_by(user_id=current_user.id).first()
-    obj = Consumption.query.first()
+    price = (
+        Price.query.filter_by(user_id=user.id).order_by(Price.created_at.desc()).first()
+    )
+    obj = (
+        Consumption.query.filter_by(user_id=user.id)
+        .order_by(Consumption.created_at.desc())
+        .first()
+    )
     if obj:
         form = ConsumptionForm(obj=obj)
     else:
@@ -44,6 +50,7 @@ def insert_docs():
     if form.validate_on_submit() and request.method == "POST":
         consumption = Consumption(
             user_id=user.id,
+            invoice_date=form.invoice_date.data,
             tko=form.tko.data,
             maintenance_common=form.maintenance_common.data,
             drainage_common=form.drainage_common.data,
@@ -53,9 +60,10 @@ def insert_docs():
             electricity_common=form.electricity_common.data,
             heating=form.heating.data,
             cold_water=form.cold_water.data,
-            hot_water_volume=form.cold_water.data,
+            hot_water_volume=form.hot_water_volume.data,
             hot_water_energy=form.hot_water_energy.data,
             drainage=form.drainage.data,
+            electricity=form.electricity.data,
             gas=form.gas.data,
             renovation=form.renovation.data,
         )
@@ -65,6 +73,7 @@ def insert_docs():
         invoice = Invoice(
             user_id=user.id,
             consumption_id=consumption.id,
+            invoice_date=consumption.invoice_date,
             tko=round(form.tko.data * price.tko, 2),
             maintenance_common=round(
                 form.maintenance_common.data * price.maintenance_common, 2
@@ -91,8 +100,35 @@ def insert_docs():
                 form.hot_water_energy.data * price.hot_water_energy, 2
             ),
             drainage=round(form.drainage.data * price.drainage, 2),
+            electricity=round(form.electricity.data * price.electricity, 2),
             gas=round(form.gas.data * price.gas, 2),
             renovation=round(form.renovation.data * price.renovation, 2),
+            recalculation=form.recalculation.data,
+        )
+
+        invoice.common_total = (
+            invoice.tko
+            + invoice.maintenance_common
+            + invoice.drainage_common
+            + invoice.cold_water_common
+            + invoice.hot_water_volume_common
+            + invoice.hot_water_energy_common
+            + invoice.electricity_common
+            + invoice.renovation
+        )
+
+        invoice.variable_total = (
+            invoice.heating
+            + invoice.cold_water
+            + invoice.hot_water_volume
+            + invoice.hot_water_energy
+            + invoice.drainage
+            + invoice.electricity
+            + invoice.gas
+        )
+
+        invoice.total = (
+            invoice.common_total + invoice.variable_total + form.recalculation.data
         )
 
         db.session.add(invoice)
@@ -109,7 +145,12 @@ def insert_docs():
 def show_docs():
     url = url_for("show_docs")
     title = "Мои документы"
-    docs = Consumption.query.options(joinedload(Consumption.invoice))
+    user = current_user
+    docs = (
+        Consumption.query.filter_by(user_id=user.id)
+        .options(joinedload(Consumption.invoice))
+        .order_by(Consumption.invoice_date.desc())
+    )
     return render_template("show_docs.html", url=url, title=title, docs=docs)
 
 
@@ -117,7 +158,9 @@ def show_docs():
 def show_prices():
     url = url_for("show_prices")
     title = "Мои тарифы"
-    prices = Price.query.order_by(Price.created_at.desc()).all()
+    prices = (
+        Price.query.filter_by(user_id=user.id).order_by(Price.created_at.desc()).all()
+    )
     return render_template("show_prices.html", url=url, title=title, prices=prices)
 
 
@@ -133,7 +176,9 @@ def show_document(doc_num):
 def insert_prices():
     user = current_user
     url = url_for("insert_prices")
-    obj = Price.query.filter_by(user_id=user.id).order_by(Price.created_at).first()
+    obj = (
+        Price.query.filter_by(user_id=user.id).order_by(Price.created_at.desc()).first()
+    )
     if obj:
         form = PriceForm(obj=obj)
     else:
@@ -151,9 +196,10 @@ def insert_prices():
             electricity_common=form.electricity_common.data,
             heating=form.heating.data,
             cold_water=form.cold_water.data,
-            hot_water_volume=form.cold_water.data,
+            hot_water_volume=form.hot_water_volume.data,
             hot_water_energy=form.hot_water_energy.data,
             drainage=form.drainage.data,
+            electricity=form.electricity.data,
             gas=form.gas.data,
             renovation=form.renovation.data,
         )

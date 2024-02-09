@@ -10,7 +10,7 @@
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ doc }}" aria-expanded="false" aria-controls="{{ doc }}">
-            {{ doc.created_at.strftime("%b-%Y") }}
+            {{ doc.invoice_date.strftime("%d-%b-%Y") }}
         </button>
       </h2>
       <div id="{{ doc }}" class="accordion-collapse collapse" data-bs-parent="#accordionTable">
@@ -74,12 +74,6 @@
                     <td>{{ doc.invoice.heating }}</td>
                 </tr>
                 <tr>
-                    <td>ХВС</td>
-                    <td>м.кв</td>
-                    <td>{{ doc.cold_water }}</td>
-                    <td>{{ doc.invoice.cold_water }}</td>
-                </tr>
-                <tr>
                     <td>ГВС теплоноситель</td>
                     <td>м.куб</td>
                     <td>{{ doc.hot_water_volume }}</td>
@@ -92,10 +86,22 @@
                     <td>{{ doc.invoice.hot_water_energy }}</td>
                 </tr>
                 <tr>
+                    <td>ХВС</td>
+                    <td>м.кв</td>
+                    <td>{{ doc.cold_water }}</td>
+                    <td>{{ doc.invoice.cold_water }}</td>
+                </tr>
+                <tr>
                     <td>Водоотведение</td>
                     <td>м.куб</td>
                     <td>{{ doc.drainage }}</td>
                     <td>{{ doc.invoice.drainage }}</td>
+                </tr>
+                <tr>
+                    <td>Электроэнергия</td>
+                    <td>кВт.ч</td>
+                    <td>{{ doc.electricity }}</td>
+                    <td>{{ doc.invoice.electricity }}</td>
                 </tr>
                 <tr>
                     <td>Газоснабжение</td>
@@ -108,6 +114,30 @@
                     <td>м.кв</td>
                     <td>{{ doc.renovation }}</td>
                     <td>{{ doc.invoice.renovation }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Итого постоянные</td>
+                    <td>{{ doc.invoice.common_total }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Итого переменные</td>
+                    <td>{{ doc.invoice.variable_total }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Итого перерасчет</td>
+                    <td>{{ doc.invoice.recalculation }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Итого</td>
+                    <td>{{ doc.invoice.total }}</td>
                 </tr>
             </tbody>
           </table>
