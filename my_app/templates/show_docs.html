@@ -25,121 +25,120 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr class="tr-common">
                     <td>Обращение с ТКО</td>
                     <td>м.куб</td>
                     <td>{{ doc.tko }}</td>
                     <td>{{ doc.invoice.tko }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-common">
                     <td>Содержание жилья</td>
                     <td>м.кв</td>
                     <td>{{ doc.maintenance_common }}</td>
                     <td>{{ doc.invoice.maintenance_common }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-common">
                     <td>Водоотведение (общее)</td>
                     <td>м.куб</td>
                     <td>{{ doc.drainage_common }}</td>
                     <td>{{ doc.invoice.drainage_common }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-common">
                     <td>ХВС (общее)</td>
                     <td>м.куб</td>
                     <td>{{ doc.cold_water_common }}</td>
                     <td>{{ doc.invoice.cold_water_common }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-common">
                     <td>ГВС теплоноситель (общее)</td>
                     <td>м.куб</td>
                     <td>{{ doc.hot_water_volume_common }}</td>
                     <td>{{ doc.invoice.hot_water_volume_common }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-common">
                     <td>ГВС тепловая энергия (общее)</td>
                     <td>Гкал</td>
                     <td>{{ doc.hot_water_energy_common }}</td>
                     <td>{{ doc.invoice.hot_water_energy_common }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-common">
                     <td>Электроэнергия (общее)</td>
                     <td>кВт.ч</td>
                     <td>{{ doc.electricity_common }}</td>
                     <td>{{ doc.invoice.electricity_common }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-variable">
                     <td>Отопление</td>
                     <td>Гкал</td>
                     <td>{{ doc.heating }}</td>
                     <td>{{ doc.invoice.heating }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-variable">
                     <td>ГВС теплоноситель</td>
                     <td>м.куб</td>
                     <td>{{ doc.hot_water_volume }}</td>
                     <td>{{ doc.invoice.hot_water_volume }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-variable">
                     <td>ГВС тепловая энергия</td>
                     <td>Гкал</td>
                     <td>{{ doc.hot_water_energy }}</td>
                     <td>{{ doc.invoice.hot_water_energy }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-variable">
                     <td>ХВС</td>
                     <td>м.кв</td>
                     <td>{{ doc.cold_water }}</td>
                     <td>{{ doc.invoice.cold_water }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-variable">
                     <td>Водоотведение</td>
                     <td>м.куб</td>
                     <td>{{ doc.drainage }}</td>
                     <td>{{ doc.invoice.drainage }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-variable">
                     <td>Электроэнергия</td>
                     <td>кВт.ч</td>
                     <td>{{ doc.electricity }}</td>
                     <td>{{ doc.invoice.electricity }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-variable">
                     <td>Газоснабжение</td>
                     <td>м.куб</td>
                     <td>{{ doc.gas }}</td>
                     <td>{{ doc.invoice.gas }}</td>
                 </tr>
-                <tr>
+                <tr class="tr-common last">
                     <td>Взнос на кап. ремонт</td>
                     <td>м.кв</td>
                     <td>{{ doc.renovation }}</td>
                     <td>{{ doc.invoice.renovation }}</td>
                 </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>Итого постоянные</td>
-                    <td>{{ doc.invoice.common_total }}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>Итого переменные</td>
-                    <td>{{ doc.invoice.variable_total }}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>Итого перерасчет</td>
-                    <td>{{ doc.invoice.recalculation }}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>Итого</td>
-                    <td>{{ doc.invoice.total }}</td>
-                </tr>
             </tbody>
+            <tfoot class="table-group-divider">
+                <tr>
+                    <td colspan="2"></td>
+                    <td class="total-common">Итого по зеленым зонам</td>
+                    <td class="total-common">{{ doc.invoice.common_total }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <td class="total-variable">Итого по оранжевым зонам</td>
+                    <td class="total-variable">{{ doc.invoice.variable_total }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <td class="total-recalculation">Итого перерасчет</td>
+                    <td class="total-recalculation">{{ doc.invoice.recalculation }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <td class="total">Итого</td>
+                    <td class="total">{{ doc.invoice.total }}</td>
+                </tr>
+
+            </tfoot>
           </table>
         </div>
       </div>

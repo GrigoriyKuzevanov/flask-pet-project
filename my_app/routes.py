@@ -157,6 +157,7 @@ def show_docs():
 @app.route("/show_prices")
 def show_prices():
     url = url_for("show_prices")
+    user = current_user
     title = "Мои тарифы"
     prices = (
         Price.query.filter_by(user_id=user.id).order_by(Price.created_at.desc()).all()

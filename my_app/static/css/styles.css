@@ -122,6 +122,7 @@ form .btn-primary:hover {
 
 
 /* Prices */
+/* Docs */
 
 /* #collapseOne {
     background-color: #4c73b2;
@@ -132,4 +133,24 @@ form .btn-primary:hover {
 
 #table-accordion th {
     background-color: #7caaea;
+}
+
+#table-accordion .tr-common td,
+#table-accordion .total-common {
+    background-color: rgb(168, 201, 102);
+}
+
+#table-accordion .tr-variable td,
+#table-accordion .total-variable {
+    background-color: rgb(255, 205, 112);
+}
+
+#table-accordion .total-recalculation {
+    background-color: rgb(168, 255, 226);
+}
+
+#table-accordion .total {
+    background-color: #b11d1d;
+    color: floralwhite;
+    font-style: bold;
 }
