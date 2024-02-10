@@ -1,0 +1,35 @@
+<nav class="mt-2" aria-label="Page navigation">
+    <ul class="pagination">
+        {% if prev_url %}
+        <li class="page-item">
+            <a class="page-link" href="{{ prev_url }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="{{ prev_url }}">{{ paginate_obj.prev_num }}</a></li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="page-item active"><a class="page-link">{{ paginate_obj.page }}</a></li>
+
+        {% if next_url %}
+        <li class="page-item"><a class="page-link" href="{{ next_url }}">{{ paginate_obj.next_num }}</a></li>
+        <li class="page-item">
+            <a class="page-link" href="{{ next_url }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="{{ next_url }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>

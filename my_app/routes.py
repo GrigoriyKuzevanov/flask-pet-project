@@ -128,8 +128,11 @@ def insert_docs():
         )
 
         invoice.total = (
-            invoice.common_total + invoice.variable_total + form.recalculation.data
+            invoice.common_total + invoice.variable_total
         )
+
+        if form.recalculation.data:
+            invoice.total += form.recalculation.data
 
         db.session.add(invoice)
         db.session.commit()
@@ -146,12 +149,22 @@ def show_docs():
     url = url_for("show_docs")
     title = "Мои документы"
     user = current_user
+    page = request.args.get('page', 1, type=int)
     docs = (
         Consumption.query.filter_by(user_id=user.id)
         .options(joinedload(Consumption.invoice))
         .order_by(Consumption.invoice_date.desc())
+        .paginate(page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
     )
-    return render_template("show_docs.html", url=url, title=title, docs=docs)
+    # docs = (
+    #     Invoice.query.filter_by(user_id=user.id)
+    #     .order_by(Invoice.invoice_date.desc())
+    #     .paginate(page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
+    # )
+    next_url = url_for('show_docs', page=docs.next_num) if docs.has_next else None
+    prev_url = url_for('show_docs', page=docs.prev_num) if docs.has_prev else None
+
+    return render_template("show_docs.html", url=url, title=title, docs=docs.items, next_url=next_url, prev_url=prev_url, paginate_obj=docs)
 
 
 @app.route("/show_prices")
