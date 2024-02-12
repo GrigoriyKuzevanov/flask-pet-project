@@ -129,3 +129,8 @@ class ConsumptionForm(FlaskForm):
     renovation = FloatField("Взнос на кап. ремонт (м.кв)", validators=[Optional()])
     recalculation = FloatField("Перерасчет (руб.)", validators=[Optional()])
     submit = SubmitField("Отправить", validators=[Optional()])
+
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Электронная почта', validators=[DataRequired(), Email()])
+    submit = SubmitField('Запросить восстановление пароля')

@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload
 
 from my_app import app, db
 from my_app.forms import (ConsumptionForm, LoginForm, PriceForm, ProfileForm,
-                          RegistrationForm)
+                          RegistrationForm, ResetPasswordRequestForm)
 from my_app.models import Company, Consumption, Invoice, Price, User
 
 load_dotenv()
@@ -305,3 +305,21 @@ def profile(username):
     return render_template(
         "profile.html", user=user, title=title, url=url, menu=menu, form=form
     )
+
+
+@app.route('/password_reset_request', methods=['GET', 'POST'])
+def password_reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    title = 'Восстановление пароля'
+    url = url_for('password_reset_request')
+    if form.validate_on_submit() and request.method == 'POST':
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            # send_password_reset_email(user)
+            pass
+        flash('На указанный адрес отправлена инструкция по восстановлению пароля')
+        return redirect(url_for('login'))
+    
+    return render_template('password_reset_request.html', title=title, url=url, form=form)
