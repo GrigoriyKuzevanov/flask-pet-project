@@ -145,6 +145,7 @@ def insert_docs():
 
 
 @app.route("/show_docs")
+@login_required
 def show_docs():
     url = url_for("show_docs")
     title = "Мои документы"
@@ -176,6 +177,7 @@ def show_docs():
 
 
 @app.route("/show_prices")
+@login_required
 def show_prices():
     url = url_for("show_prices")
     user = current_user
