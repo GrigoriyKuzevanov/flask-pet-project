@@ -8,7 +8,9 @@ from sqlalchemy.orm import joinedload
 
 from my_app import app, db
 from my_app.forms import (ConsumptionForm, LoginForm, PriceForm, ProfileForm,
-                          RegistrationForm, ResetPasswordRequestForm)
+                          RegistrationForm, ResetPasswordForm,
+                          ResetPasswordRequestForm)
+from my_app.mail import send_password_reset_email
 from my_app.models import Company, Consumption, Invoice, Price, User
 
 load_dotenv()
@@ -127,9 +129,7 @@ def insert_docs():
             + invoice.gas
         )
 
-        invoice.total = (
-            invoice.common_total + invoice.variable_total
-        )
+        invoice.total = invoice.common_total + invoice.variable_total
 
         if form.recalculation.data:
             invoice.total += form.recalculation.data
@@ -149,22 +149,30 @@ def show_docs():
     url = url_for("show_docs")
     title = "Мои документы"
     user = current_user
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get("page", 1, type=int)
     docs = (
         Consumption.query.filter_by(user_id=user.id)
         .options(joinedload(Consumption.invoice))
         .order_by(Consumption.invoice_date.desc())
-        .paginate(page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
+        .paginate(page=page, per_page=app.config["POSTS_PER_PAGE"], error_out=False)
     )
     # docs = (
     #     Invoice.query.filter_by(user_id=user.id)
     #     .order_by(Invoice.invoice_date.desc())
     #     .paginate(page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
     # )
-    next_url = url_for('show_docs', page=docs.next_num) if docs.has_next else None
-    prev_url = url_for('show_docs', page=docs.prev_num) if docs.has_prev else None
+    next_url = url_for("show_docs", page=docs.next_num) if docs.has_next else None
+    prev_url = url_for("show_docs", page=docs.prev_num) if docs.has_prev else None
 
-    return render_template("show_docs.html", url=url, title=title, docs=docs.items, next_url=next_url, prev_url=prev_url, paginate_obj=docs)
+    return render_template(
+        "show_docs.html",
+        url=url,
+        title=title,
+        docs=docs.items,
+        next_url=next_url,
+        prev_url=prev_url,
+        paginate_obj=docs,
+    )
 
 
 @app.route("/show_prices")
@@ -307,19 +315,38 @@ def profile(username):
     )
 
 
-@app.route('/password_reset_request', methods=['GET', 'POST'])
+@app.route("/password_reset_request", methods=["GET", "POST"])
 def password_reset_request():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for("index"))
     form = ResetPasswordRequestForm()
-    title = 'Восстановление пароля'
-    url = url_for('password_reset_request')
-    if form.validate_on_submit() and request.method == 'POST':
+    title = "Сброс пароля"
+    url = url_for("password_reset_request")
+    if form.validate_on_submit() and request.method == "POST":
         user = User.query.filter_by(email=form.email.data).first()
         if user:
-            # send_password_reset_email(user)
-            pass
-        flash('На указанный адрес отправлена инструкция по восстановлению пароля')
-        return redirect(url_for('login'))
-    
-    return render_template('password_reset_request.html', title=title, url=url, form=form)
+            send_password_reset_email(user)
+        flash("На указанный адрес отправлена инструкция по сбросу пароля")
+        return redirect(url_for("login"))
+
+    return render_template(
+        "password_reset_request.html", title=title, url=url, form=form
+    )
+
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
+    title = "Изменение пароля"
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return redirect(url_for("index"))
+    form = ResetPasswordForm()
+    if form.validate_on_submit() and request.method == "POST":
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash("Пароль успешно изменен")
+        return redirect(url_for("login"))
+
+    return render_template("reset_password.html", title=title, form=form)

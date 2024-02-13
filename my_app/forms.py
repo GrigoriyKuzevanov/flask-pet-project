@@ -132,5 +132,13 @@ class ConsumptionForm(FlaskForm):
 
 
 class ResetPasswordRequestForm(FlaskForm):
-    email = StringField('Электронная почта', validators=[DataRequired(), Email()])
-    submit = SubmitField('Запросить восстановление пароля')
+    email = StringField("Электронная почта", validators=[DataRequired(), Email()])
+    submit = SubmitField("Запросить смену пароля")
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField("Новый пароль", validators=[DataRequired()])
+    password2 = PasswordField(
+        "Повторите новый пароль", validators=[DataRequired(), EqualTo("password")]
+    )
+    submit = SubmitField("Сменить пароль")

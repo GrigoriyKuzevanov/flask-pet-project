@@ -1,11 +1,13 @@
 # from sqlalchemy.ext.declarative import declarative_base
 # from sqlalchemy import Column, Integer, String
 from datetime import datetime
+from time import time
 
+import jwt
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from my_app import db, login
+from my_app import app, db, login
 
 
 @login.user_loader
@@ -36,6 +38,23 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {"reset_password": self.id, "exp": time() + expires_in},
+            app.config["SECRET_KEY"],
+            algorithm="HS256",
+        )
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])[
+                "reset_password"
+            ]
+        except:
+            return None
+        return User.query.get(id)
 
 
 class Price(db.Model):
