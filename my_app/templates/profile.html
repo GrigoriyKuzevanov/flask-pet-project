@@ -3,6 +3,7 @@
 {% block content %}
 {{ super() }}
 
+
 <!-- <h3 class="h-form-name">Изменить данные пользователя {{ user }}</h3> -->
 <form action="/profile/{{ user.username }}" method="post">
     {{ form.hidden_tag() }}
@@ -64,7 +65,7 @@
                 {{ form.reg_at.label(class='col-form-label') }}
             </div>
             <div class="col-auto">
-                {{ form.reg_at(class='form-control', disabled=True, readonly=True, size=32, value=user.reg_at.strftime("%d %b %Y, %H:%M")) }}
+                {{ form.reg_at(class='form-control', disabled=True, readonly=True, size=32, value=user.reg_at.strftime("%d %b %Y")) }}
             </div>
             {% for error in form.reg_at.errors %}
             <span style="color: red;">[{{ error }}]</span>

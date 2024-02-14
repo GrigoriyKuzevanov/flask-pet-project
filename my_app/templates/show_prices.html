@@ -9,7 +9,8 @@
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ p }}" aria-expanded="false" aria-controls="{{ p }}">
-            {{ p.created_at.strftime("%b-%Y") }}
+            <!-- {{ p.created_at.strftime("%b-%Y") }} -->
+            {{ moment(p.created_at).format('LL') }}
         </button>
       </h2>
       <div id="{{ p }}" class="accordion-collapse collapse" data-bs-parent="#accordionTable">
