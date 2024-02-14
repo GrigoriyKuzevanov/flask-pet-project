@@ -6,6 +6,8 @@
 ## Используемые технологии
 - Flask
 - Flask-sqlalchemy
+- Celery
+- Redis
 - Postgresql
 - Bootstrap
 - Alembic
