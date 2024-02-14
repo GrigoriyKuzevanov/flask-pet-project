@@ -8,6 +8,8 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 
+from my_app.celery_init import celery_init_app
+
 app = Flask(__name__)
 
 app.config.from_object(Config)
@@ -40,5 +42,7 @@ if not app.debug:
         )
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
+
+celery_app = celery_init_app(app)
 
 from my_app import errors, models, routes

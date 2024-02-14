@@ -36,6 +36,11 @@ MAIL_USE_TLS=
 MAIL_USERNAME=
 MAIL_PASSWORD=
 MAIL_ADDRESS=
+
+# Celery
+CELERY_BROKER_URL=
+CELERY_RESULT_BACKEND=
+CELERY_TASK_IGNORE_RESULT=
 ```
 
 Конфигурация сервиса находится в файле config.py
@@ -67,4 +72,12 @@ flask db upgrade
 Запуск:
 ```
 flask run
+```
+Запуск redis:
+```
+docker-compose -f docker-compose-local.yml up
+```
+Запуск celery:
+```
+celery -A payments.celery_app worker --loglevel INFO
 ```

@@ -20,3 +20,9 @@ class Config(object):
     ADMINS = [os.getenv("MAIL_ADDRESS")]
 
     POSTS_PER_PAGE = 5
+
+    CELERY = dict(
+        broker_url=os.getenv("CELERY_BROKER_URL"),
+        result_backend=os.getenv("CELERY_RESULT_BACKEND"),
+        task_ignore_result=os.getenv("CELERY_TASK_IGNORE_RESULT") == 'True',
+    )
