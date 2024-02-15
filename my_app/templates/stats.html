@@ -2,7 +2,72 @@
 
 {% block content %}
 {{ super() }}
+<div class="mb-3 tip">
+    <p>* Подсказки</p>
+    <ul>
+        <li>
+            <p style="background-color: rgb(168, 201, 102);">В зеленую зону входят расходы на содержание общедомового имущества, обращение с ТКО, содержание жилья, внос на кап. ремонт</p>
+        </li>
+        <li>
+            <p style="background-color: rgb(255, 205, 112);">В оранжевую зону входят расходы на отопление, ГВС, ХВС, водоотведение, электроэнергию по счетчикам и газоснабжение </p>
+        </li>
+    </ul>
+</div>
+<div>
+    <h3>Потребление</h3>
+    <table id="table-consumpt" class="table table-sm table-bordered">
+        <thead>
+            <th scope="col">Дата</th>
+            <th scope="col">Отопление</th>
+            <th scope="col">ГВС объем</th>
+            <th scope="col">ГВС энергия</th>
+            <th scope="col">ХВС объем</th>
+            <th scope="col">Электроэнергия</th>
+        </thead>
+        <tbody>
+            {% for c in consumption %}
+            <tr>
+                <td>{{ moment(c.invoice_date).format('MMMM YYYY') }}</td>
+                <td>{{ c.heating }}</td>
+                <td>{{ c.hot_water_volume }}</td>
+                <td>{{ c.hot_water_energy }}</td>
+                <td>{{ c.cold_water }}</td>
+                <td>{{ c.electricity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<p>Содержимое страницы "Статистика"</p>
+    <h3>Затраты</h3>
+    <table id="table-invoice" class="table table-sm table-bordered">
+        <thead>
+            <th scope="col">Дата</th>
+            <th scope="col">Итого по зеленым зонам</th>
+            <th scope="col">Итого по оранжевым зонам</th>
+            <th scope="col">Отопление</th>
+            <th scope="col">ГВС</th>
+            <th scope="col">ХВС</th>
+            <th scope="col">Электроэнергия</th>
+            <th scope="col">Итого</th>
+        </thead>
+        <tbody>
+            {% for c in consumption %}
+            <tr>
+                <td>{{ moment(c.invoice.invoice_date).format('MMMM YYYY') }}</td>
+                <td class="td-common-total">{{ c.invoice.common_total }}</td>
+                <td class="td-variable-total">{{ c.invoice.variable_total }}</td>
+                <td>{{ c.invoice.heating }}</td>
+                <td>{{ c.invoice.hot_water_volume + c.invoice.hot_water_energy }}</td>
+                <td>{{ c.invoice.cold_water }}</td>
+                <td>{{ c.invoice.electricity }}</td>
+                <td class="td-total">{{ c.invoice.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% for avg in avgs %}
+    <p style="color: rgb(8, 17, 69);">{{ avg.name }}: {{ avg.value }}</p>
+    {% endfor %}
+</div>
 
 {% endblock %}

@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy.orm import joinedload
+from sqlalchemy.sql import func
 
 from my_app import app, db
 from my_app.forms import (ConsumptionForm, LoginForm, PriceForm, ProfileForm,
@@ -242,7 +243,42 @@ def insert_prices():
 def stats():
     url = url_for("stats")
     title = "Статистика"
-    return render_template("stats.html", title=title, menu=menu, url=url)
+    user = current_user
+    consumtion = (
+        Consumption.query.filter_by(user_id=user.id)
+        .options(joinedload(Consumption.invoice))
+        .order_by(Consumption.invoice_date.asc())
+        .limit(12)
+    )
+    avg_common_total_query = (
+        db.session.query(func.avg(Invoice.common_total))
+        .filter_by(user_id=user.id)
+        .scalar()
+    )
+    avg_variable_total_query = (
+        db.session.query(func.avg(Invoice.variable_total))
+        .filter_by(user_id=user.id)
+        .scalar()
+    )
+    avg_total_query = (
+        db.session.query(func.avg(Invoice.total)).filter_by(user_id=user.id).scalar()
+    )
+
+    avgs = [
+        {
+            "name": "Среднее по зеленым зонам (руб.)",
+            "value": round(avg_common_total_query, 2),
+        },
+        {
+            "name": "Среднее по оранжевым зонам (руб.)",
+            "value": round(avg_variable_total_query, 2),
+        },
+        {"name": "Среднее общее (руб.)", "value": round(avg_total_query, 2)},
+    ]
+
+    return render_template(
+        "stats.html", title=title, menu=menu, url=url, consumption=consumtion, avgs=avgs
+    )
 
 
 @app.route("/login", methods=["POST", "GET"])

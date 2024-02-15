@@ -154,3 +154,28 @@ form .btn-primary:hover {
     color: floralwhite;
     font-style: bold;
 }
+
+/* Stats */
+#table-consumpt th,
+#table-invoice th {
+    background-color: #7caaea;
+}
+
+#table-consumpt td,
+#table-invoice td {
+    background-color: #b2ccf1;
+}
+
+#table-invoice .td-variable-total {
+    background-color: rgb(255, 205, 112);
+}
+
+#table-invoice .td-common-total {
+    background-color: rgb(168, 201, 102);
+}
+
+#table-invoice .td-total {
+    background-color: #b11d1d;
+    color: floralwhite;
+    font-style: bold;
+}
