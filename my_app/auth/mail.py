@@ -1,5 +1,4 @@
 from flask import render_template
-
 from my_app import app
 from my_app.tasks import send_email
 

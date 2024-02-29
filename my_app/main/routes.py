@@ -1,13 +1,12 @@
 from dotenv import load_dotenv
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from sqlalchemy.orm import joinedload
-from sqlalchemy.sql import func
-
 from my_app import app, db
 from my_app.main import bp
 from my_app.main.forms import ConsumptionForm, PriceForm
 from my_app.models import Consumption, Invoice, Price
+from sqlalchemy.orm import joinedload
+from sqlalchemy.sql import func
 
 load_dotenv()
 
@@ -266,9 +265,14 @@ def stats():
         },
         {
             "name": "Среднее по оранжевым зонам (руб.)",
-            "value": round(avg_variable_total_query, 2) if avg_variable_total_query else 0,
+            "value": (
+                round(avg_variable_total_query, 2) if avg_variable_total_query else 0
+            ),
         },
-        {"name": "Среднее общее (руб.)", "value": round(avg_total_query, 2) if avg_total_query else 0},
+        {
+            "name": "Среднее общее (руб.)",
+            "value": round(avg_total_query, 2) if avg_total_query else 0,
+        },
     ]
 
     return render_template(

@@ -3,12 +3,10 @@ from urllib.parse import quote as url_quote
 from dotenv import load_dotenv
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-
 from my_app import db
 from my_app.auth import bp
-from my_app.auth.forms import (LoginForm, ProfileForm,
-                          RegistrationForm, ResetPasswordForm,
-                          ResetPasswordRequestForm)
+from my_app.auth.forms import (LoginForm, ProfileForm, RegistrationForm,
+                               ResetPasswordForm, ResetPasswordRequestForm)
 from my_app.auth.mail import send_password_reset_email
 from my_app.models import Company, User
 
@@ -21,6 +19,7 @@ menu = [
     {"name": "Платежные документы", "url": "/insert_docs"},
     {"name": "Тарифы", "url": "/insert_prices"},
 ]
+
 
 @bp.route("/login", methods=["POST", "GET"])
 def login():
@@ -65,7 +64,9 @@ def register():
         db.session.commit()
         flash("Вы успешно зарегестрировались в сервисе")
         return redirect(url_for("auth.login"))
-    return render_template("auth/register.html", title="Регистрация", form=form, menu=menu)
+    return render_template(
+        "auth/register.html", title="Регистрация", form=form, menu=menu
+    )
 
 
 @bp.route("/profile/<username>", methods=["GET", "POST"])

@@ -22,10 +22,12 @@ login.login_message = "Авторизуйтесь в сервисе, чтобы 
 mail = Mail(app)
 
 from my_app.errors import bp as errors_bp
-from my_app.auth import bp as auth_bp
-from my_app.main import bp as main_bp
 app.register_blueprint(errors_bp)
+
+from my_app.auth import bp as auth_bp
 app.register_blueprint(auth_bp, url_prefix="/auth")
+
+from my_app.main import bp as main_bp
 app.register_blueprint(main_bp)
 
 if not app.debug:
