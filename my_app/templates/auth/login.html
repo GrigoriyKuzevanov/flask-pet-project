@@ -3,7 +3,7 @@
 {% block content %}
 {{ super() }}
 
-<form action="/login" method="post">
+<form action="" method="post">
     {{ form.hidden_tag() }}
     <div class="mb-3">
         <div class="row g-3 align-items-center">
@@ -33,12 +33,12 @@
 </form>
 <div class="col-auto my-4">   
     <p>Для регистрации в сервисе перейдите по  
-        <a class="link" href="{{ url_for('register') }}">ссылке</a>
+        <a class="link" href="{{ url_for('auth.register') }}">ссылке</a>
     </p>
 </div>
 <div class="col-auto my-4">   
     <p>Для сброса пароля перейдите по  
-        <a class="link" href="{{ url_for('password_reset_request') }}">ссылке</a>
+        <a class="link" href="{{ url_for('auth.password_reset_request') }}">ссылке</a>
     </p>
 </div>
 

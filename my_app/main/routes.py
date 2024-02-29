@@ -1,18 +1,13 @@
-# from werkzeug.urls import url_parse
-from urllib.parse import quote as url_quote
-
 from dotenv import load_dotenv
 from flask import flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_required, login_user, logout_user
+from flask_login import current_user, login_required
 from sqlalchemy.orm import joinedload
 from sqlalchemy.sql import func
 
 from my_app import app, db
-from my_app.forms import (ConsumptionForm, LoginForm, PriceForm, ProfileForm,
-                          RegistrationForm, ResetPasswordForm,
-                          ResetPasswordRequestForm)
-from my_app.mail import send_password_reset_email
-from my_app.models import Company, Consumption, Invoice, Price, User
+from my_app.main import bp
+from my_app.main.forms import ConsumptionForm, PriceForm
+from my_app.models import Consumption, Invoice, Price
 
 load_dotenv()
 
@@ -25,18 +20,18 @@ menu = [
 ]
 
 
-@app.route("/")
+@bp.route("/")
 def index():
-    url = url_for("index")
+    url = url_for("main.index")
     title = "Главная"
     return render_template("index.html", menu=menu, url=url, title=title)
 
 
-@app.route("/insert_docs", methods=["POST", "GET"])
+@bp.route("/insert_docs", methods=["POST", "GET"])
 @login_required
 def insert_docs():
     user = current_user
-    url = url_for("insert_docs")
+    url = url_for("main.insert_docs")
     title = "Внести документ"
     price = (
         Price.query.filter_by(user_id=user.id).order_by(Price.created_at.desc()).first()
@@ -138,17 +133,17 @@ def insert_docs():
         db.session.add(invoice)
         db.session.commit()
         flash("Данные внесены успешно")
-        redirect(url_for("show_docs"))
+        redirect(url_for("main.show_docs"))
 
     return render_template(
         "insert_docs.html", title=title, menu=menu, url=url, form=form
     )
 
 
-@app.route("/show_docs")
+@bp.route("/show_docs")
 @login_required
 def show_docs():
-    url = url_for("show_docs")
+    url = url_for("main.show_docs")
     title = "Мои документы"
     user = current_user
     page = request.args.get("page", 1, type=int)
@@ -163,8 +158,8 @@ def show_docs():
     #     .order_by(Invoice.invoice_date.desc())
     #     .paginate(page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
     # )
-    next_url = url_for("show_docs", page=docs.next_num) if docs.has_next else None
-    prev_url = url_for("show_docs", page=docs.prev_num) if docs.has_prev else None
+    next_url = url_for("main.show_docs", page=docs.next_num) if docs.has_next else None
+    prev_url = url_for("main.show_docs", page=docs.prev_num) if docs.has_prev else None
 
     return render_template(
         "show_docs.html",
@@ -177,10 +172,10 @@ def show_docs():
     )
 
 
-@app.route("/show_prices")
+@bp.route("/show_prices")
 @login_required
 def show_prices():
-    url = url_for("show_prices")
+    url = url_for("main.show_prices")
     user = current_user
     title = "Мои тарифы"
     prices = (
@@ -190,17 +185,17 @@ def show_prices():
 
 
 # # конвертеры: path, int, float (<int:doc_num>)
-@app.route("/document/<doc_num>")
+@bp.route("/document/<doc_num>")
 @login_required
 def show_document(doc_num):
     return f"Пользователь: {doc_num}"
 
 
-@app.route("/insert_prices", methods=["POST", "GET"])
+@bp.route("/insert_prices", methods=["POST", "GET"])
 @login_required
 def insert_prices():
     user = current_user
-    url = url_for("insert_prices")
+    url = url_for("main.insert_prices")
     obj = (
         Price.query.filter_by(user_id=user.id).order_by(Price.created_at.desc()).first()
     )
@@ -231,17 +226,17 @@ def insert_prices():
         db.session.add(price)
         db.session.commit()
         flash("Данные внесены успешно")
-        redirect(url_for("show_prices"))
+        redirect(url_for("main.show_prices"))
 
     return render_template(
         "insert_prices.html", title="Тарифы", menu=menu, url=url, form=form
     )
 
 
-@app.route("/stats")
+@bp.route("/stats")
 @login_required
 def stats():
-    url = url_for("stats")
+    url = url_for("main.stats")
     title = "Статистика"
     user = current_user
     consumtion = (
@@ -267,124 +262,15 @@ def stats():
     avgs = [
         {
             "name": "Среднее по зеленым зонам (руб.)",
-            "value": round(avg_common_total_query, 2),
+            "value": round(avg_common_total_query, 2) if avg_common_total_query else 0,
         },
         {
             "name": "Среднее по оранжевым зонам (руб.)",
-            "value": round(avg_variable_total_query, 2),
+            "value": round(avg_variable_total_query, 2) if avg_variable_total_query else 0,
         },
-        {"name": "Среднее общее (руб.)", "value": round(avg_total_query, 2)},
+        {"name": "Среднее общее (руб.)", "value": round(avg_total_query, 2) if avg_total_query else 0},
     ]
 
     return render_template(
         "stats.html", title=title, menu=menu, url=url, consumption=consumtion, avgs=avgs
     )
-
-
-@app.route("/login", methods=["POST", "GET"])
-def login():
-    url = url_for("login")
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-    form = LoginForm()
-    if form.validate_on_submit() and request.method == "POST":
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash("Неверный логин или пароль", category="error")
-            return redirect(url_for("login"))
-        login_user(user, remember=form.remember_me.data)
-        flash(
-            f"Пользователь {form.username.data} авторизован успешно", category="success"
-        )
-        next_page = request.args.get("next")
-        if not next_page or url_quote(next_page).netloc != "":
-            next_page = url_for("index")
-        return redirect(next_page)
-
-    return render_template(
-        "login.html", title="Авторизация", menu=menu, form=form, url=url
-    )
-
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for("index"))
-
-
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash("Вы успешно зарегестрировались в сервисе")
-        return redirect(url_for("login"))
-    return render_template("register.html", title="Регистрация", form=form, menu=menu)
-
-
-@app.route("/profile/<username>", methods=["GET", "POST"])
-@login_required
-def profile(username):
-    url = url_for("profile", username=username)
-    user = current_user
-    title = "Профиль пользователя"
-    companies = Company.query.all()
-    companies_list = [(c.id, c.name) for c in companies]
-    form = ProfileForm(
-        obj=user, original_username=user.username, original_email=user.email
-    )
-    form.company.choices = companies_list
-    if form.validate_on_submit() and request.method == "POST":
-        user.username = form.username.data
-        user.email = form.email.data
-        user.first_name = form.first_name.data
-        user.last_name = form.last_name.data
-        user.company_id = form.company.data
-        db.session.commit()
-        flash("Профиль обновлен успешно")
-        redirect(url)
-    return render_template(
-        "profile.html", user=user, title=title, url=url, menu=menu, form=form
-    )
-
-
-@app.route("/password_reset_request", methods=["GET", "POST"])
-def password_reset_request():
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-    form = ResetPasswordRequestForm()
-    title = "Сброс пароля"
-    url = url_for("password_reset_request")
-    if form.validate_on_submit() and request.method == "POST":
-        user = User.query.filter_by(email=form.email.data).first()
-        if user:
-            send_password_reset_email(user)
-        flash("На указанный адрес отправлена инструкция по сбросу пароля")
-        return redirect(url_for("login"))
-
-    return render_template(
-        "password_reset_request.html", title=title, url=url, form=form
-    )
-
-
-@app.route("/reset_password/<token>", methods=["GET", "POST"])
-def reset_password(token):
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-    title = "Изменение пароля"
-    user = User.verify_reset_password_token(token)
-    if not user:
-        return redirect(url_for("index"))
-    form = ResetPasswordForm()
-    if form.validate_on_submit() and request.method == "POST":
-        user.set_password(form.password.data)
-        db.session.commit()
-        flash("Пароль успешно изменен")
-        return redirect(url_for("login"))
-
-    return render_template("reset_password.html", title=title, form=form)

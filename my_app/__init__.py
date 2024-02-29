@@ -12,20 +12,21 @@ from flask_moment import Moment
 from my_app.celery_init import celery_init_app
 
 app = Flask(__name__)
-
 app.config.from_object(Config)
-
 db = SQLAlchemy(app)
-
 migrate = Migrate(app, db)
-
 moment = Moment(app)
-
 login = LoginManager(app)
-login.login_view = "login"
+login.login_view = "auth.login"
 login.login_message = "Авторизуйтесь в сервисе, чтобы открыть эту страницу"
-
 mail = Mail(app)
+
+from my_app.errors import bp as errors_bp
+from my_app.auth import bp as auth_bp
+from my_app.main import bp as main_bp
+app.register_blueprint(errors_bp)
+app.register_blueprint(auth_bp, url_prefix="/auth")
+app.register_blueprint(main_bp)
 
 if not app.debug:
     if app.config["MAIL_SERVER"]:
@@ -48,4 +49,4 @@ if not app.debug:
 
 celery_app = celery_init_app(app)
 
-from my_app import errors, models, routes
+from my_app import models

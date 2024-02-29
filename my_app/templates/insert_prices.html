@@ -17,7 +17,7 @@
         </li>
     </ul>
 </div>
-<form action="/insert_prices" method="post">
+<form action="" method="post">
     {{ form.hidden_tag() }}
     {% for f in form if f.widget.input_type != 'hidden' %}
     {% if f.label != form.submit.label %}
